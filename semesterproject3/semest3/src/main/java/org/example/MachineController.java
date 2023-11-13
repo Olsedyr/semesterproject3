@@ -16,6 +16,14 @@ public class MachineController {
     final OpcUaClient client = BeerClientSingleton.getInstance();
     public MachineController() {
     }
+    public void readIngredients() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Cube.Ingredients");
+        System.out.println("Ingredients: " + readNodeValue(nodeId));
+    }
+    public void readMaintenance() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Cube.Maintenance.Details");
+        System.out.println("Maintenance Details: " + readNodeValue(nodeId));
+    }
 
 
     public void readProductsProcessed() throws ExecutionException, InterruptedException {
