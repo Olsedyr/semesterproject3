@@ -28,7 +28,7 @@ public class Main {
         machineController.readProductsProcessed();
 
         machineController.readIngredients();
-        machineController.readMaintenance();
+        machineController.readMaintenanceDetails();
 
     }
 }

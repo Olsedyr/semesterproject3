@@ -16,15 +16,6 @@ public class MachineController {
     final OpcUaClient client = BeerClientSingleton.getInstance();
     public MachineController() {
     }
-    public void readIngredients() throws ExecutionException, InterruptedException {
-        NodeId nodeId = new NodeId(6, "::Program:Cube.Ingredients");
-        System.out.println("Ingredients: " + readNodeValue(nodeId));
-    }
-    public void readMaintenance() throws ExecutionException, InterruptedException {
-        NodeId nodeId = new NodeId(6, "::Program:Cube.Maintenance.Details");
-        System.out.println("Maintenance Details: " + readNodeValue(nodeId));
-    }
-
 
     public void readProductsProcessed() throws ExecutionException, InterruptedException {
         NodeId nodeId  = new NodeId(6, "::Program:Cube.Admin.ProdProcessedCount");
@@ -126,7 +117,7 @@ public class MachineController {
     }
 
     public void startMachine() throws ExecutionException, InterruptedException {
-        NodeId nodeId  = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
+        NodeId nodeId  = new NodeId(6, "::Program:Cube.Command.CtrlCmd");
         final int value = 2;
         StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();
         if (statusCode.isGood()) {
@@ -142,4 +133,38 @@ public class MachineController {
         final Boolean value = true;
         StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();
     }
+
+    /**
+     * Reads the current ingredients data from the OPC UA server
+     *
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public void readIngredients() throws ExecutionException, InterruptedException {
+        // OPC UA node representing the ingredients data
+        NodeId nodeId = new NodeId(6, "::Program:Cube.Ingredients");
+
+        // Read the node value and print the result
+        System.out.println("Ingredients: " + readNodeValue(nodeId));
+    }
+
+    /**
+     * Reads the current maintenance details from the OPC UA server
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+
+    public void readMaintenanceDetails() throws ExecutionException,InterruptedException {
+        // OPC UA node representing maintenance details
+        NodeId nodeId = new NodeId(6,"::Program:Cube.Maintenance.Details");
+        // Read the node value and print the result
+        System.out.println("Maintenance Details:" + readNodeValue(nodeId));
+    }
 }
+
+
+
+
+
+
+
