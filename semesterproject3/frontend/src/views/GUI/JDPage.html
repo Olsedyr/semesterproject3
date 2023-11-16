@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="JDstyles.css">
+    <title>Junior Production Manager</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Junior Production Manager Dashboard</h1>
+    </div>
+    <div class="dashboard">
+        <!-- Production Speed -->
+        <div class="info-box">
+            <h2>Production Speed</h2>
+            <div class="box-content" id="productionSpeedBox">Loading...</div>
+            <!-- Placeholder for graph logic -->
+        </div>
+
+        <!-- Quantity -->
+        <div class="info-box">
+            <h2>Quantity</h2>
+            <div class="quantity-box">
+                <span id="quantity">0</span>
+                <!-- Placeholder for graph logic -->
+            </div>
+        </div>
+
+        <!-- Recipe -->
+        <div class="info-box">
+            <h2>Recipe</h2>
+            <div class="box-content" id="recipeBox">Loading...</div>
+            <!-- Placeholder for recipe information -->
+        </div>
+
+        <!-- Maintenance Bar -->
+        <div class="info-box">
+            <h2>Maintenance Bar</h2>
+            <div class="maintenance-bar" id="maintenanceBar"></div>
+            <!-- Placeholder for maintenance bar logic -->
+        </div>
+
+        <!-- Ingredients -->
+        <div class="info-box">
+            <h2>Ingredients</h2>
+            <div class="box-content" id="ingredientsBox">Loading...</div>
+            <!-- Placeholder for ingredients information -->
+        </div>
+
+        <!-- Sensor Data -->
+        <div class="info-box">
+            <h2>Sensor Data</h2>
+            <div class="box-content" id="sensorDataBox">Loading...</div>
+            <!-- Placeholder for graph logic -->
+        </div>
+
+        <!-- Current Batch Info -->
+        <div class="info-box">
+            <h2>Current Batch Info</h2>
+            <div class="box-content" id="currentBatchInfoBox">Loading...</div>
+            <!-- Placeholder for batch info -->
+        </div>
+
+        <div class="controls">
+            <button onclick="sendRequest()">Send Stop Request</button>
+            <button onclick="saveProductionData()">Save Production Data</button>
+            <button onclick="printProductionData()">Print Production Data</button>
+        </div>
+    </div>
+</div>
+
+<script src="JuniorApp.js"></script>
+</body>
+</html>
