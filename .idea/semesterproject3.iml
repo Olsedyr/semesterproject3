@@ -6,4 +6,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="AdditionalModuleElements">
+    <!-- Additional changes from the 'main' branch -->
+  </component>
 </module>

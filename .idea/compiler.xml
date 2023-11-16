@@ -19,4 +19,9 @@
       <module name="semesterprojecet3" options="-parameters" />
     </option>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="semesterproject3" options="-parameters" />
+    </option>
+  </component>
 </project>
