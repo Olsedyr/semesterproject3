@@ -5,7 +5,7 @@ public class MaintenanceDetails{
     private int stopReasonID;
     private int maintenanceStatusBar;
 
-    // No-argument constructor
+
     public MaintenanceDetails() {
     }
 
