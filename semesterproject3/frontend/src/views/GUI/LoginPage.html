@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      background-image: url('LoginPageBackground.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    header {
+      text-align: left;
+      padding: 20px;
+      margin: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    form {
+      max-width: 400px;
+      padding: 20px;
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
+      margin-top: 60px;
+    }
+
+    h1 {
+      color: #333;
+      margin: 0;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Company Name</h1>
+</header>
+<form>
+  <label>
+    <input type="text" placeholder="Username">
+  </label>
+  <label>
+    <input type="password" placeholder="Password">
+  </label>
+  <button type="submit">Sign in</button>
+  <p><a href="#">Forgot password? Click Here</a></p>
+  <img src="LoginPageBackground.png" alt="Login Background" style="display: none;">
+</form>
+</body>
+</html>
