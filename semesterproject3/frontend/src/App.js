@@ -1,9 +1,32 @@
+// Remove this line
 import logo from './logo.svg';
-import './App.css';
-import api from './api/axiosConfig';
-import {useState, useEffect} from 'react';
-import axios from 'axios';
 
+import React from 'react';
+import Login from './Login';
+
+function App() {
+    return (
+        <div>
+            <Login />
+        </div>
+    );
+}
+
+export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 function BatchList() {
   const [batches, setBatches] = useState([]);
 
@@ -51,3 +74,4 @@ function BatchList() {
 }
 
 export default BatchList;
+*/
