@@ -15,8 +15,6 @@ import org.eclipse.milo.opcua.stack.core.types.structured.MonitoringParameters;
 import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
 import org.example.beerMachine.OpcUA.BeerClientSingleton;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
-public class ProducedProductsSub {
+public class ProductsDefectiveSub {
 
     final OpcUaClient client;
     private final Map<NodeId, Object> nodeValues;
-    public ProducedProductsSub() {
+    public ProductsDefectiveSub() {
         this.client = BeerClientSingleton.getInstance() ;
         this.nodeValues = new ConcurrentHashMap<>();
     }
@@ -37,10 +35,10 @@ public class ProducedProductsSub {
     public void createSubscription() {
         try
         {
-
+            // Adapted from OPC UA files from the course Industrial cyber-physical systems
             /* Node endpoints */
             NodeId[] nodeIdsToMonitor = {
-                    new NodeId(6, "::Program:Cube.Admin.ProdProcessedCount")
+                    new NodeId(6, "::Program:Cube.Admin.ProdDefectiveCount")
             };
 
             List<MonitoredItemCreateRequest> monitoredItemCreateRequests = new ArrayList<>();
@@ -76,7 +74,7 @@ public class ProducedProductsSub {
 
 
             // setting the consumer after the subscription creation
-            UaSubscription.ItemCreationCallback onItemCreated =  (item, id) -> item.setValueConsumer(this::handleValueUpdate);
+            UaSubscription.ItemCreationCallback onItemCreated =  (item, id) -> item.setValueConsumer(this::onSubscriptionValue);
 
 
             List<UaMonitoredItem> items = subscription.createMonitoredItems(TimestampsToReturn.Both, monitoredItemCreateRequests, onItemCreated).get();
@@ -98,26 +96,13 @@ public class ProducedProductsSub {
     }
 
 
-    // Inside handleValueUpdate method
-
-
-    private void handleValueUpdate(UaMonitoredItem item, DataValue value) {
+    private void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
         Object newValue = value.getValue().getValue();
         NodeId nodeId = item.getReadValueId().getNodeId();
 
-        // Log received value and NodeId
-        System.out.println("Received value for Node " + nodeId + ": " + newValue);
+        //System.out.println("Received value for Node " + nodeId + ": " + newValue);
 
-//        // Retrieve the timestamps using the value's metadata
-//        long serverTimestamp = value.getServerTime().getJavaTime();
-//
-//        // Log timestamps in milliseconds
-//        System.out.println("Server Timestamp: " + serverTimestamp + " ms");
-//
-//        // Log current time to check update intervals
-//        System.out.println("Current time: " + Instant.now());
-//
-//        // Store the received value in nodeValues map
+        // Store the received value in nodeValues map
         nodeValues.put(nodeId, newValue);
     }
 

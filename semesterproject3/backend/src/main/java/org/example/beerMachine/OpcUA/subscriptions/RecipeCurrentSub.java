@@ -1,4 +1,5 @@
 package org.example.beerMachine.OpcUA.subscriptions;
+
 import jakarta.annotation.PostConstruct;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
@@ -23,11 +24,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
-public class DefectProductsSub {
+public class RecipeCurrentSub {
 
     final OpcUaClient client;
     private final Map<NodeId, Object> nodeValues;
-    public DefectProductsSub() {
+    public RecipeCurrentSub() {
         this.client = BeerClientSingleton.getInstance() ;
         this.nodeValues = new ConcurrentHashMap<>();
     }
@@ -36,10 +37,10 @@ public class DefectProductsSub {
     public void createSubscription() {
         try
         {
-
+            // Adapted from OPC UA files from the course Industrial cyber-physical systems
             /* Node endpoints */
             NodeId[] nodeIdsToMonitor = {
-                    new NodeId(6, "::Program:Cube.Admin.ProdDefectiveCount")
+                    new NodeId(6, "::Program:Cube.Admin.Parameter[0].Value")
             };
 
             List<MonitoredItemCreateRequest> monitoredItemCreateRequests = new ArrayList<>();
@@ -75,7 +76,7 @@ public class DefectProductsSub {
 
 
             // setting the consumer after the subscription creation
-            UaSubscription.ItemCreationCallback onItemCreated =  (item, id) -> item.setValueConsumer(this::handleValueUpdate);
+            UaSubscription.ItemCreationCallback onItemCreated =  (item, id) -> item.setValueConsumer(this::onSubscriptionValue);
 
 
             List<UaMonitoredItem> items = subscription.createMonitoredItems(TimestampsToReturn.Both, monitoredItemCreateRequests, onItemCreated).get();
@@ -97,26 +98,12 @@ public class DefectProductsSub {
     }
 
 
-    // Inside handleValueUpdate method
-
-
-    private void handleValueUpdate(UaMonitoredItem item, DataValue value) {
+    private void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
         Object newValue = value.getValue().getValue();
         NodeId nodeId = item.getReadValueId().getNodeId();
 
-        // Log received value and NodeId
-        System.out.println("Received value for Node " + nodeId + ": " + newValue);
+        //System.out.println("Received value for Node " + nodeId + ": " + newValue);
 
-//        // Retrieve the timestamps using the value's metadata
-//        long serverTimestamp = value.getServerTime().getJavaTime();
-//
-//        // Log timestamps in milliseconds
-//        System.out.println("Server Timestamp: " + serverTimestamp + " ms");
-//
-//        // Log current time to check update intervals
-//        System.out.println("Current time: " + Instant.now());
-//
-//        // Store the received value in nodeValues map
         nodeValues.put(nodeId, newValue);
     }
 
