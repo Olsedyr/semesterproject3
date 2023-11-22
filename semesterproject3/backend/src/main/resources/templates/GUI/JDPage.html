@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="PMstyles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Production Manager</title>
+    <link rel="stylesheet" href="/css/JDstyles.css">
+    <title>Junior Production Manager</title>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>Production Manager Dashboard</h1>
+        <h1>Junior Production Manager Dashboard</h1>
     </div>
     <div class="dashboard">
         <!-- Production Speed -->
@@ -26,10 +25,8 @@
             <h2>Quantity</h2>
             <div class="quantity-box">
                 <span id="quantity">0</span>
-                <button onclick="increaseQuantity()">▲</button>
-                <button onclick="decreaseQuantity()">▼</button>
+                <!-- Placeholder for graph logic -->
             </div>
-            <!-- Placeholder for graph logic -->
         </div>
 
         <!-- Recipe -->
@@ -66,16 +63,15 @@
             <div class="box-content" id="currentBatchInfoBox">Loading...</div>
             <!-- Placeholder for batch info -->
         </div>
-    </div>
 
-    <div class="controls">
-        <button onclick="saveProductionData()">Save Production Data</button>
-        <button onclick="printProductionData()">Print Production Data</button>
-        <button onclick="startProduction()">Start Production</button>
-        <button onclick="stopProduction()">Stop Production</button>
+        <div class="controls">
+            <button onclick="sendRequest()">Send Stop Request</button>
+            <button onclick="saveProductionData()">Save Production Data</button>
+            <button onclick="printProductionData()">Print Production Data</button>
+        </div>
     </div>
 </div>
 
-<script src="app.js"></script>
+<script src="JuniorApp.js"></script>
 </body>
 </html>
