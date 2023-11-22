@@ -7,6 +7,8 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
+import org.example.MaintenanceDetails;
+import org.example.PackMLCommand;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -121,8 +123,7 @@ public class MachineController {
         return null;
     }
 
-    public void startMachine() throws ExecutionException, InterruptedException, UaException {
-        NodeId nodeId  = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
+
     public void startMachine() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
         final int value = 2;
