@@ -1,28 +1,21 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './Login';
-import OpcUaValuesDisplay from './components/OpcUaValuesDisplay';
-import './App.css';
+import PM from './PM'
 
 function App() {
-  return (
-    <BrowserRouter>
-      <div className="App">
-        <Routes>
-          <Route index element={<Login />} />
-          <Route path="OpcUaValuesDisplay" element={<OpcUaValuesDisplay />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
-  );
+    return (
+        <div>
+            <PM />
+        </div>
+    );
 }
 export default App;
+
+
+
+
 /*
-
-
-
-
-
 function App() {
   return (
       <div>
