@@ -1,19 +1,26 @@
 package org.example.beerMachine.controller;
 
 import org.example.beerMachine.model.Users;
+import org.example.beerMachine.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+
+@RestController
+@RequestMapping(path="api/users")
+@CrossOrigin(origins = "http://localhost:3000") // Allow requests from frontend
 public class AuthController {
+    /*
     private final AuthenticationManager authenticationManager;
 
+    @Autowired
     public AuthController(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
@@ -32,11 +39,14 @@ public class AuthController {
 
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwtToken));
 
-         */
+
 
         String jwtToken = "your_generated_jwt_token";
 
         return ResponseEntity.ok(jwtToken);
     }
+
+
+     */
 
 }

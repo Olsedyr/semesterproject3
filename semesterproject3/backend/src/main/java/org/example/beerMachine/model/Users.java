@@ -25,16 +25,19 @@ public class Users {
 
     private String username;
     private String password;
-    private LocalDateTime createdTime;
 
     public Users(){
     }
 
-    public Users(Long id, String username, String password, LocalDateTime createdTime){
+    public Users(Long id, String username, String password){
         this.id = id;
         this.username = username;
         this.password = password;
-        this.createdTime = createdTime;
+    }
+
+    public Users(String username, String password){
+        this.username = username;
+        this.password = password;
     }
 
     @Override
@@ -43,10 +46,8 @@ public class Users {
                 "id=" + id +
                 ", username=" + username +
                 ", password=" + password +
-                ", createdTime=" + createdTime +
                 '}';
     }
-
 
     public void setId(Long id) {
         this.id = id;
@@ -57,10 +58,6 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setCreatedTime(LocalDateTime createdTime) {
-        this.createdTime = createdTime;
     }
 
     public Long getId() {
@@ -75,7 +72,4 @@ public class Users {
         return password;
     }
 
-    public LocalDateTime getCreatedTime() {
-        return createdTime;
-    }
 }

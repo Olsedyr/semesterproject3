@@ -36,21 +36,19 @@ public class UserService {
         userRepository.deleteById(userID);
     }
 
-    /*
+
     @Transactional
-    public void updateStudent(Long userID, Integer recipe, Integer quantity, Integer machineSpeed) {
-        User user = userRepository.findById(batchId).orElseThrow(() -> new IllegalStateException(
-                "No batch found with id: " + batchId));
-        if(recipe != null && !Objects.equals(batch.getRecipe(), recipe)){
-            batch.setRecipe(recipe);
+    public void updateStudent(Long userID, String username, String password) {
+        Users user = userRepository.findById(userID).orElseThrow(() -> new IllegalStateException(
+                "No batch found with id: " + userID));
+        if(username != null && !Objects.equals(user.getUsername(), username)){
+            user.setUsername(username);
         }
-        if(quantity != null && !Objects.equals(batch.getQuantity(), quantity)){
-            batch.setQuantity(quantity);
+        if(password != null && !Objects.equals(user.getPassword(), password)){
+            user.setPassword(password);
         }
-        if(machineSpeed != null && !Objects.equals(batch.getMachineSpeed(), machineSpeed)){
-            batch.setMachineSpeed(machineSpeed);
-        }
+
     }
 
-     */
+
 }
