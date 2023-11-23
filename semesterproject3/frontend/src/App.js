@@ -3,11 +3,12 @@ import logo from './logo.svg';
 
 import React from 'react';
 import Login from './Login';
+import PM from './PM'
 
 function App() {
     return (
         <div>
-            <Login />
+            <PM />
         </div>
     );
 }
