@@ -51,8 +51,13 @@ public class BeerClientSingleton {
         }
 
         cfg.setEndpoint(selectedEndpoint);
-        OpcUaClientConfig config = cfg.setIdentityProvider(identityProvider).build();
-        OpcUaClient client = OpcUaClient.create(config);
+
+        // Connect with username and password
+        // OpcUaClientConfig config = cfg.setIdentityProvider(identityProvider).build();
+        // OpcUaClient client = OpcUaClient.create(config);
+
+        // Connect as Anonymous
+        OpcUaClient client = OpcUaClient.create(cfg.build());
 
         return (OpcUaClient) client.connect().get();
     }
