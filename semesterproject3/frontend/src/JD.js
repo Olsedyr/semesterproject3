@@ -18,6 +18,10 @@ const Login = () => {
     const [performance, setPerformance] = useState(0.90); // Placeholder value, replace with actual performance
     const [quality, setQuality] = useState(0.95); // Placeholder value, replace with actual quality
 
+
+    const [currentProductionSpeed, setCurrentProductionSpeed] = useState(0);
+
+
     // State for sensor data
     const [sensorData, setSensorData] = useState({
         temperature: 0.0,
@@ -42,6 +46,8 @@ const Login = () => {
         }
     }, [maintenanceProgress]);
 
+
+
     // Effect to fetch and update sensor data
     useEffect(() => {
         // Fetch and update sensor data from your backend or any other source
@@ -61,11 +67,7 @@ const Login = () => {
         setSensorData(dummySensorData);
     }, [quantity]); // Empty dependency array to run this effect once on mount
 
-    // Placeholder data for the production speed graph
-    const productionSpeedData = Array.from({ length: 11 }, (_, index) => ({
-        x: index,
-        y: Math.floor(Math.random() * 101),
-    }));
+
 
     // Placeholder data for the temp over time data
     const TempOverTimeData = Array.from({ length: 11 }, (_, index) => ({
@@ -89,49 +91,6 @@ const Login = () => {
         calculateOEE();
     }, [availability, performance, quality]);
 
-
-
-    // Effect to create and destroy the production speed chart
-    useEffect(() => {
-        const productionSpeedChart = new Chart(document.getElementById('productionSpeedChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                datasets: [{
-                    label: 'Production Speed',
-                    data: productionSpeedData,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    fill: false,
-                }],
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'linear',
-                        position: 'bottom',
-                        min: 0,
-                        max: 10,
-                        ticks: {
-                            callback: (value) => `${value}min`,
-                        },
-                    },
-                    y: {
-                        type: 'linear',
-                        position: 'left',
-                        min: 0,
-                        max: 100,
-                        ticks: {
-                            callback: (value) => `${value}%`,
-                        },
-                    },
-                },
-            },
-        });
-
-        return () => {
-            productionSpeedChart.destroy();
-        };
-    }, []); // Empty dependency array to run this effect once on mount
 
 
 
@@ -239,7 +198,8 @@ const Login = () => {
                 <div className="info-box">
                     <h2>Production Speed</h2>
                     <div className="box-content">
-                        <canvas id="productionSpeedChart"></canvas>
+                        {/* Display the current production speed */}
+                        <p><strong>Current Production Speed:</strong> {currentProductionSpeed}</p>
                     </div>
                 </div>
 

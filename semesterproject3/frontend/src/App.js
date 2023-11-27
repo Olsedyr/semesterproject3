@@ -7,7 +7,7 @@ import JD from './JD'
 function App() {
     return (
         <div>
-            <PM />
+            <JD />
         </div>
     );
 }

@@ -22,74 +22,16 @@ const Login = () => {
 
     const [productionStartTime, setProductionStartTime] = useState(null);
 
-    const [isProductionRunning, setIsProductionRunning] = useState(false);
-
-    const productionSpeedChartRef = useRef(null);
-
-    const [productionSpeedData, setProductionSpeedData] = useState([]);
 
 
-
-    const handleSpeedChange = (event) => {
-        const speed = parseInt(event.target.value, 10) || 0;
-        setSelectedSpeed(speed);
-
-        // Update graph only if production is running
-        if (isProductionRunning) {
-            updateProductionSpeedData();
-            drawProductionSpeedGraph();
-        }
-    };
 
     const handleStartProduction = () => {
         generateRandomBatchID();
         setBatchStatus("In Progress");
         setProductionStartTime(new Date().toLocaleString());
-        setIsProductionRunning(true);
 
-        // Clear the previous production speed data
-        setProductionSpeedData([]);
-
-        // Destroy the previous chart instance
-        if (productionSpeedChartRef.current) {
-            productionSpeedChartRef.current.destroy();
-        }
-
-        // Initial point on the graph
-        const initialPoint = {
-            x: 0,
-            y: selectedSpeed * 10, // Set the y-axis value based on the percentage matching the speed
-        };
-
-        // Set the initial point
-        setProductionSpeedData([initialPoint]);
-
-        // Initial draw of the graph
-        drawProductionSpeedGraph();
-
-        // Set interval to update and draw graph every 2 minutes
-        const intervalId = setInterval(() => {
-            // Update and draw graph every 2 minutes
-            updateProductionSpeedData();
-            drawProductionSpeedGraph();
-        }, 120000);
-
-        // Save the interval ID to clear it later
-        setUpdateIntervalId(intervalId);
     };
 
-    const handleStopProduction = () => {
-        // Clear the interval when production stops
-        clearInterval(updateIntervalId);
-        setIsProductionRunning(false);
-    };
-
-    const handleClear = () => {
-        // Clear the interval and production speed data
-        clearInterval(updateIntervalId);
-        setProductionSpeedData([]);
-        setIsProductionRunning(false);
-    };
     const generateRandomBatchID = () => {
         const newBatchID = Math.floor(Math.random() * 1000000);
         setBatchID(newBatchID);
@@ -173,112 +115,6 @@ const Login = () => {
         calculateOEE();
     }, [availability, performance, quality]);
 
-    useEffect(() => {
-        if (isProductionRunning) {
-            // Clear the previous production speed data
-            setProductionSpeedData([]);
-
-            // Destroy the previous chart instance
-            if (productionSpeedChartRef.current) {
-                productionSpeedChartRef.current.destroy();
-            }
-
-            // Initial draw of the graph
-            drawProductionSpeedGraph();
-
-            const intervalId = setInterval(() => {
-                // Clear the previous production speed data
-                setProductionSpeedData([]);
-
-                // Destroy the previous chart instance
-                if (productionSpeedChartRef.current) {
-                    productionSpeedChartRef.current.destroy();
-                }
-
-                // Update and draw graph every 10 seconds
-                updateProductionSpeedData();
-                drawProductionSpeedGraph();
-            }, 10000);
-
-            // Clear the interval when the component unmounts or production stops
-            return () => clearInterval(intervalId);
-        }
-    }, [isProductionRunning]);
-
-    const updateProductionSpeedData = () => {
-        const currentTime = new Date().getTime();
-        const elapsedTime = (currentTime - productionStartTime) / 1000 / 60; // Convert milliseconds to minutes
-
-        // Generate random production speed data
-        const newDataPoint = {
-            x: elapsedTime,
-            y: Math.floor(Math.random() * (selectedSpeed * 10) + 50),
-        };
-
-        setProductionSpeedData((prevData) => {
-            // Clear the previous data when the production starts
-            if (elapsedTime === 0) {
-                return [newDataPoint];
-            }
-
-            // If it's been 2 minutes or more, add a new data point
-            if (elapsedTime >= 2 && elapsedTime % 2 === 0) {
-                return [...prevData, newDataPoint];
-            }
-
-            return prevData;
-        });
-
-        drawProductionSpeedGraph(); // Update the chart after data is updated
-    };
-
-
-    const destroyProductionSpeedChart = () => {
-        if (productionSpeedChartRef.current) {
-            productionSpeedChartRef.current.destroy();
-        }
-    };
-
-    const drawProductionSpeedGraph = () => {
-        const ctx = document.getElementById('productionSpeedChart').getContext('2d');
-
-        destroyProductionSpeedChart();
-
-        productionSpeedChartRef.current = new Chart(ctx, {
-            type: 'line',
-            data: {
-                datasets: [{
-                    label: 'Production Speed',
-                    data: productionSpeedData,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    fill: false,
-                }],
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'linear',
-                        position: 'bottom',
-                        min: 0,
-                        max: 10,
-                        ticks: {
-                            callback: (value) => `${value}min`,
-                        },
-                    },
-                    y: {
-                        type: 'linear',
-                        position: 'left',
-                        min: 0,
-                        max: 100,
-                        ticks: {
-                            callback: (value) => `${value}%`,
-                        },
-                    },
-                },
-            },
-        });
-    };
 
     // Effect to create and destroy the production speed chart
     useEffect(() => {
@@ -378,10 +214,12 @@ const Login = () => {
                 <h1>Production Manager Dashboard</h1>
             </div>
             <div className="dashboard">
+
                 {/* Production Speed */}
                 <div className="info-box">
                     <h2>Production Speed</h2>
                     <div className="box-content">
+
                         {/* Speed Selector */}
                         <div className="speed-selector">
                             <label htmlFor="speedSelector">Select Speed:</label>
@@ -389,14 +227,10 @@ const Login = () => {
                                 type="number"
                                 id="speedSelector"
                                 value={selectedSpeed}
-                                onChange={handleSpeedChange}
                                 min="1"
                                 max="10"
                             />
                         </div>
-
-                        {/* Production Speed Chart */}
-                        <canvas id="productionSpeedChart"></canvas>
                     </div>
                 </div>
 
