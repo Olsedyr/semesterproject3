@@ -1,6 +1,7 @@
+// PM.js
+
 import React, { useState, useEffect } from 'react';
-import { useRef } from 'react';
-import './PMstyles.css';
+import './JDstyles.css';
 import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
 
@@ -11,94 +12,11 @@ const Login = () => {
     const [selectedRecipe, setSelectedRecipe] = useState('Pilsner'); // Set the default recipe
     const [batchID, setBatchID] = useState(null);
     const [batchStatus, setBatchStatus] = useState("Not In Progress");
-
+    const [productionStartTime, setProductionStartTime] = useState("Production Not Started");
     const [oee, setOEE] = useState(0);
-
     const [availability, setAvailability] = useState(0.85); // Placeholder value, replace with actual availability
     const [performance, setPerformance] = useState(0.90); // Placeholder value, replace with actual performance
     const [quality, setQuality] = useState(0.95); // Placeholder value, replace with actual quality
-
-    const [selectedSpeed, setSelectedSpeed] = useState(5);
-
-    const [productionStartTime, setProductionStartTime] = useState(null);
-
-    const [isProductionRunning, setIsProductionRunning] = useState(false);
-
-    const productionSpeedChartRef = useRef(null);
-
-    const [productionSpeedData, setProductionSpeedData] = useState([]);
-
-
-
-    const handleSpeedChange = (event) => {
-        const speed = parseInt(event.target.value, 10) || 0;
-        setSelectedSpeed(speed);
-
-        // Update graph only if production is running
-        if (isProductionRunning) {
-            updateProductionSpeedData();
-            drawProductionSpeedGraph();
-        }
-    };
-
-    const handleStartProduction = () => {
-        generateRandomBatchID();
-        setBatchStatus("In Progress");
-        setProductionStartTime(new Date().toLocaleString());
-        setIsProductionRunning(true);
-
-        // Clear the previous production speed data
-        setProductionSpeedData([]);
-
-        // Destroy the previous chart instance
-        if (productionSpeedChartRef.current) {
-            productionSpeedChartRef.current.destroy();
-        }
-
-        // Initial point on the graph
-        const initialPoint = {
-            x: 0,
-            y: selectedSpeed * 10, // Set the y-axis value based on the percentage matching the speed
-        };
-
-        // Set the initial point
-        setProductionSpeedData([initialPoint]);
-
-        // Initial draw of the graph
-        drawProductionSpeedGraph();
-
-        // Set interval to update and draw graph every 2 minutes
-        const intervalId = setInterval(() => {
-            // Update and draw graph every 2 minutes
-            updateProductionSpeedData();
-            drawProductionSpeedGraph();
-        }, 120000);
-
-        // Save the interval ID to clear it later
-        setUpdateIntervalId(intervalId);
-    };
-
-    const handleStopProduction = () => {
-        // Clear the interval when production stops
-        clearInterval(updateIntervalId);
-        setIsProductionRunning(false);
-    };
-
-    const handleClear = () => {
-        // Clear the interval and production speed data
-        clearInterval(updateIntervalId);
-        setProductionSpeedData([]);
-        setIsProductionRunning(false);
-    };
-    const generateRandomBatchID = () => {
-        const newBatchID = Math.floor(Math.random() * 1000000);
-        setBatchID(newBatchID);
-    };
-
-    const handleRecipeChange = (event) => {
-        const selectedRecipe = event.target.value;
-        setSelectedRecipe(selectedRecipe);
-    };
 
     // State for sensor data
     const [sensorData, setSensorData] = useState({
@@ -114,18 +32,7 @@ const Login = () => {
     });
 
     // Function to handle quantity change
-    const handleQuantityChange = (event) => {
-        const value = parseInt(event.target.value, 10) || 0;
 
-        // Update the quantity state
-        setQuantity(value);
-
-        // Update the amountToProduce in sensorData
-        setSensorData((prevSensorData) => ({
-            ...prevSensorData,
-            amountToProduce: value,
-        }));
-    };
 
     // Effect to update the width of the maintenance progress
     useEffect(() => {
@@ -154,12 +61,21 @@ const Login = () => {
         setSensorData(dummySensorData);
     }, [quantity]); // Empty dependency array to run this effect once on mount
 
+    // Placeholder data for the production speed graph
+    const productionSpeedData = Array.from({ length: 11 }, (_, index) => ({
+        x: index,
+        y: Math.floor(Math.random() * 101),
+    }));
+
     // Placeholder data for the temp over time data
     const TempOverTimeData = Array.from({ length: 11 }, (_, index) => ({
         x: index,
         y: Math.floor(Math.random() * 101),
     }));
 
+
+
+    // Function to calculate and update OEE
     const calculateOEE = () => {
         // Calculate OEE
         const calculatedOEE = availability * performance * quality * 100;
@@ -173,78 +89,11 @@ const Login = () => {
         calculateOEE();
     }, [availability, performance, quality]);
 
+
+
+    // Effect to create and destroy the production speed chart
     useEffect(() => {
-        if (isProductionRunning) {
-            // Clear the previous production speed data
-            setProductionSpeedData([]);
-
-            // Destroy the previous chart instance
-            if (productionSpeedChartRef.current) {
-                productionSpeedChartRef.current.destroy();
-            }
-
-            // Initial draw of the graph
-            drawProductionSpeedGraph();
-
-            const intervalId = setInterval(() => {
-                // Clear the previous production speed data
-                setProductionSpeedData([]);
-
-                // Destroy the previous chart instance
-                if (productionSpeedChartRef.current) {
-                    productionSpeedChartRef.current.destroy();
-                }
-
-                // Update and draw graph every 10 seconds
-                updateProductionSpeedData();
-                drawProductionSpeedGraph();
-            }, 10000);
-
-            // Clear the interval when the component unmounts or production stops
-            return () => clearInterval(intervalId);
-        }
-    }, [isProductionRunning]);
-
-    const updateProductionSpeedData = () => {
-        const currentTime = new Date().getTime();
-        const elapsedTime = (currentTime - productionStartTime) / 1000 / 60; // Convert milliseconds to minutes
-
-        // Generate random production speed data
-        const newDataPoint = {
-            x: elapsedTime,
-            y: Math.floor(Math.random() * (selectedSpeed * 10) + 50),
-        };
-
-        setProductionSpeedData((prevData) => {
-            // Clear the previous data when the production starts
-            if (elapsedTime === 0) {
-                return [newDataPoint];
-            }
-
-            // If it's been 2 minutes or more, add a new data point
-            if (elapsedTime >= 2 && elapsedTime % 2 === 0) {
-                return [...prevData, newDataPoint];
-            }
-
-            return prevData;
-        });
-
-        drawProductionSpeedGraph(); // Update the chart after data is updated
-    };
-
-
-    const destroyProductionSpeedChart = () => {
-        if (productionSpeedChartRef.current) {
-            productionSpeedChartRef.current.destroy();
-        }
-    };
-
-    const drawProductionSpeedGraph = () => {
-        const ctx = document.getElementById('productionSpeedChart').getContext('2d');
-
-        destroyProductionSpeedChart();
-
-        productionSpeedChartRef.current = new Chart(ctx, {
+        const productionSpeedChart = new Chart(document.getElementById('productionSpeedChart').getContext('2d'), {
             type: 'line',
             data: {
                 datasets: [{
@@ -278,7 +127,14 @@ const Login = () => {
                 },
             },
         });
-    };
+
+        return () => {
+            productionSpeedChart.destroy();
+        };
+    }, []); // Empty dependency array to run this effect once on mount
+
+
+
 
     // Effect to create and destroy the production speed chart
     useEffect(() => {
@@ -325,6 +181,7 @@ const Login = () => {
 
 
 
+
     const currentBatchInfo = {
         batchStatus: 'In Progress',
         productionStartTime: new Date(),
@@ -332,7 +189,6 @@ const Login = () => {
         quantityProduced: 250,
         defects: 5,
     };
-
 
 
 
@@ -375,27 +231,14 @@ const Login = () => {
     return (
         <div className="container">
             <div className="header">
-                <h1>Production Manager Dashboard</h1>
+                <h1>Junior Developer Dashboard</h1>
             </div>
             <div className="dashboard">
+
                 {/* Production Speed */}
                 <div className="info-box">
                     <h2>Production Speed</h2>
                     <div className="box-content">
-                        {/* Speed Selector */}
-                        <div className="speed-selector">
-                            <label htmlFor="speedSelector">Select Speed:</label>
-                            <input
-                                type="number"
-                                id="speedSelector"
-                                value={selectedSpeed}
-                                onChange={handleSpeedChange}
-                                min="1"
-                                max="10"
-                            />
-                        </div>
-
-                        {/* Production Speed Chart */}
                         <canvas id="productionSpeedChart"></canvas>
                     </div>
                 </div>
@@ -410,32 +253,6 @@ const Login = () => {
                 </div>
 
 
-
-                {/* Quantity */}
-                <div className="info-box">
-                    <h2>Quantity</h2>
-                    <div className="quantity-box">
-                        <input
-                            type="number"
-                            id="quantity"
-                            value={quantity}
-                            onChange={handleQuantityChange}
-                        />
-                    </div>
-                </div>
-
-                {/* Recipe */}
-                <div className="info-box">
-                    <h2>Recipe</h2>
-                    <div className="box-content" id="recipeBox">
-                        <select id="beerRecipe" className="recipe-dropdown" value={selectedRecipe} onChange={handleRecipeChange}>
-                            <option value="Pilsner">Pilsner</option>
-                            <option value="Classic">Classic</option>
-                            <option value="IPA">IPA</option>
-                            <option value="Stout">Stout</option>
-                        </select>
-                    </div>
-                </div>
 
                 {/* Maintenance Bar */}
                 <div className="info-box">
@@ -549,16 +366,12 @@ const Login = () => {
                     </div>
                 </div>
 
+
             </div>
 
 
             <div className="controls">
                 <button className="button" onClick={saveProductionDataAsPDF}>Save Production Data</button>
-                <button className="button" onClick={handleStartProduction}>Start Production</button>
-                <button className="button" onClick={() => {}}>Stop Production</button>
-                <button className="button" onClick={() => {}}>Clear</button>
-                <button className="button" onClick={() => {}}>Reset</button>
-                <button className="button" onClick={() => {}}>Abort</button>
             </div>
         </div>
     );
