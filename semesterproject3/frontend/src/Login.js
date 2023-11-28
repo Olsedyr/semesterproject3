@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
 import LoginPageBackground from './LoginPageBackground.png';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('http://localhost:8080/api/users/login', {
+            const response = await axios.post('http://localhost:8080/api/Users/login', {
                 username,
                 password,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    // You can add other headers as needed
+                },
+                timeout: 5000,
             });
 
             if (response && response.data) {
                 // Handle successful login, e.g., store the token in local storage
                 console.log('Login successful', response.data);
-                return "GUI/PMPage";
+                navigate('/GUI/PMPage');
             } else {
                 // Handle unexpected response format
                 console.error('Unexpected response format', response);
