@@ -14,6 +14,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping(path="api/Users")
+@CrossOrigin(origins = "http://localhost:3000") // Allow requests from frontend
 public class UserController {
 
     private final UserRepository userRepository;
@@ -25,7 +26,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/api/Users/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         // Step 1: Retrieve the user from the database based on the provided username
         String username = loginRequest.getUsername();
@@ -53,7 +54,7 @@ public class UserController {
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(expirationMillis))
-                .signWith(SignatureAlgorithm.HS256, "SEMESTERPROJEKT3") // Replace with your secret key
+                .signWith(SignatureAlgorithm.HS256, "SEMESTERPROJEKT3SEMESTERPROJEKT3SEMESTERPROJEKT3") // Replace with your secret key
                 .compact();
     }
 
