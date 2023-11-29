@@ -1,16 +1,19 @@
 package org.example.beerMachine.controller;
 
-import org.example.beerMachine.model.Users;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
+
 @Controller
+@CrossOrigin(origins = {"http://localhost:3000"})
 public class LoginController {
+
 
     @GetMapping("/login")
     public String showLoginPage() {
-        Users ProductionManager = new Users("admin", "admin");
         return "GUI/LoginPage";
-
     }
+
 }
+

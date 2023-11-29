@@ -1,6 +1,7 @@
+// PM.js
+
 import React, { useState, useEffect } from 'react';
-import { useRef } from 'react';
-import './PMstyles.css';
+import './JDstyles.css';
 import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
 
@@ -11,36 +12,15 @@ const Login = () => {
     const [selectedRecipe, setSelectedRecipe] = useState('Pilsner'); // Set the default recipe
     const [batchID, setBatchID] = useState(null);
     const [batchStatus, setBatchStatus] = useState("Not In Progress");
-
+    const [productionStartTime, setProductionStartTime] = useState("Production Not Started");
     const [oee, setOEE] = useState(0);
-
     const [availability, setAvailability] = useState(0.85); // Placeholder value, replace with actual availability
     const [performance, setPerformance] = useState(0.90); // Placeholder value, replace with actual performance
     const [quality, setQuality] = useState(0.95); // Placeholder value, replace with actual quality
 
-    const [selectedSpeed, setSelectedSpeed] = useState(5);
 
-    const [productionStartTime, setProductionStartTime] = useState(null);
+    const [currentProductionSpeed, setCurrentProductionSpeed] = useState(0);
 
-
-
-
-    const handleStartProduction = () => {
-        generateRandomBatchID();
-        setBatchStatus("In Progress");
-        setProductionStartTime(new Date().toLocaleString());
-
-    };
-
-    const generateRandomBatchID = () => {
-        const newBatchID = Math.floor(Math.random() * 1000000);
-        setBatchID(newBatchID);
-    };
-
-    const handleRecipeChange = (event) => {
-        const selectedRecipe = event.target.value;
-        setSelectedRecipe(selectedRecipe);
-    };
 
     // State for sensor data
     const [sensorData, setSensorData] = useState({
@@ -56,18 +36,7 @@ const Login = () => {
     });
 
     // Function to handle quantity change
-    const handleQuantityChange = (event) => {
-        const value = parseInt(event.target.value, 10) || 0;
 
-        // Update the quantity state
-        setQuantity(value);
-
-        // Update the amountToProduce in sensorData
-        setSensorData((prevSensorData) => ({
-            ...prevSensorData,
-            amountToProduce: value,
-        }));
-    };
 
     // Effect to update the width of the maintenance progress
     useEffect(() => {
@@ -76,6 +45,8 @@ const Login = () => {
             maintenanceBar.style.width = `${maintenanceProgress}%`;
         }
     }, [maintenanceProgress]);
+
+
 
     // Effect to fetch and update sensor data
     useEffect(() => {
@@ -96,12 +67,17 @@ const Login = () => {
         setSensorData(dummySensorData);
     }, [quantity]); // Empty dependency array to run this effect once on mount
 
+
+
     // Placeholder data for the temp over time data
     const TempOverTimeData = Array.from({ length: 11 }, (_, index) => ({
         x: index,
         y: Math.floor(Math.random() * 101),
     }));
 
+
+
+    // Function to calculate and update OEE
     const calculateOEE = () => {
         // Calculate OEE
         const calculatedOEE = availability * performance * quality * 100;
@@ -114,6 +90,9 @@ const Login = () => {
     useEffect(() => {
         calculateOEE();
     }, [availability, performance, quality]);
+
+
+
 
 
     // Effect to create and destroy the production speed chart
@@ -161,6 +140,7 @@ const Login = () => {
 
 
 
+
     const currentBatchInfo = {
         batchStatus: 'In Progress',
         productionStartTime: new Date(),
@@ -168,7 +148,6 @@ const Login = () => {
         quantityProduced: 250,
         defects: 5,
     };
-
 
 
 
@@ -211,7 +190,7 @@ const Login = () => {
     return (
         <div className="container">
             <div className="header">
-                <h1>Production Manager Dashboard</h1>
+                <h1>Junior Developer Dashboard</h1>
             </div>
             <div className="dashboard">
 
@@ -219,18 +198,8 @@ const Login = () => {
                 <div className="info-box">
                     <h2>Production Speed</h2>
                     <div className="box-content">
-
-                        {/* Speed Selector */}
-                        <div className="speed-selector">
-                            <label htmlFor="speedSelector">Select Speed:</label>
-                            <input
-                                type="number"
-                                id="speedSelector"
-                                value={selectedSpeed}
-                                min="1"
-                                max="10"
-                            />
-                        </div>
+                        {/* Display the current production speed */}
+                        <p><strong>Current Production Speed:</strong> {currentProductionSpeed}</p>
                     </div>
                 </div>
 
@@ -244,32 +213,6 @@ const Login = () => {
                 </div>
 
 
-
-                {/* Quantity */}
-                <div className="info-box">
-                    <h2>Quantity</h2>
-                    <div className="quantity-box">
-                        <input
-                            type="number"
-                            id="quantity"
-                            value={quantity}
-                            onChange={handleQuantityChange}
-                        />
-                    </div>
-                </div>
-
-                {/* Recipe */}
-                <div className="info-box">
-                    <h2>Recipe</h2>
-                    <div className="box-content" id="recipeBox">
-                        <select id="beerRecipe" className="recipe-dropdown" value={selectedRecipe} onChange={handleRecipeChange}>
-                            <option value="Pilsner">Pilsner</option>
-                            <option value="Classic">Classic</option>
-                            <option value="IPA">IPA</option>
-                            <option value="Stout">Stout</option>
-                        </select>
-                    </div>
-                </div>
 
                 {/* Maintenance Bar */}
                 <div className="info-box">
@@ -383,16 +326,12 @@ const Login = () => {
                     </div>
                 </div>
 
+
             </div>
 
 
             <div className="controls">
                 <button className="button" onClick={saveProductionDataAsPDF}>Save Production Data</button>
-                <button className="button" onClick={handleStartProduction}>Start Production</button>
-                <button className="button" onClick={() => {}}>Stop Production</button>
-                <button className="button" onClick={() => {}}>Clear</button>
-                <button className="button" onClick={() => {}}>Reset</button>
-                <button className="button" onClick={() => {}}>Abort</button>
             </div>
         </div>
     );
