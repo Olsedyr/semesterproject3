@@ -1,6 +1,7 @@
 package org.example.beerMachine.model;
 
 import jakarta.persistence.*;
+import org.example.beerMachine.service.UserService;
 import org.hibernate.type.descriptor.jdbc.VarcharJdbcType;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,7 +43,7 @@ public class Users {
 
     @Override
     public String toString() {
-        return "Batch{" +
+        return "Users{" +
                 "id=" + id +
                 ", username=" + username +
                 ", password=" + password +
