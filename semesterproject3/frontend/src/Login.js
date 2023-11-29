@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import LoginPageBackground from './LoginPageBackground.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import PM from './PM';
 
 
 const Login = () => {
@@ -25,7 +26,7 @@ const Login = () => {
             if (response && response.data) {
                 // Handle successful login, e.g., store the token in local storage
                 console.log('Login successful', response.data);
-                navigate('/GUI/PMPage');
+                navigate('/pm');
             } else {
                 // Handle unexpected response format
                 console.error('Unexpected response format', response);

@@ -14,6 +14,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping(path="api/Users")
+@CrossOrigin(origins = "http://localhost:3000") // Allow requests from frontend
 public class UserController {
 
     private final UserRepository userRepository;
