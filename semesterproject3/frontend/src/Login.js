@@ -3,6 +3,7 @@ import LoginPageBackground from './LoginPageBackground.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PM from './PM';
+import JD from './JD';
 
 
 const Login = () => {
@@ -26,7 +27,14 @@ const Login = () => {
             if (response && response.data) {
                 // Handle successful login, e.g., store the token in local storage
                 console.log('Login successful', response.data);
-                navigate('/pm');
+
+                console.log(localStorage.getItem('token', response.data));
+
+                if (username === "admin") {
+                    navigate('/pm'); //If username is admin
+                } else if (username === "junior"){
+                    navigate('/jd'); //If username is junior
+                }
             } else {
                 // Handle unexpected response format
                 console.error('Unexpected response format', response);
