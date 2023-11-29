@@ -14,7 +14,6 @@ import java.util.Date;
 
 @RestController
 @RequestMapping(path="api/Users")
-@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     private final UserRepository userRepository;
