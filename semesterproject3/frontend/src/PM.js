@@ -98,16 +98,16 @@ const Login = () => {
         };
 
         const endpoints = [
-            { url: 'http://localhost:8080/opcua/productsDefectiveSub/::Program:Cube.Admin.ProdDefectiveCount', setValue: setDefectNodeValue },
-            { url: 'http://localhost:8080/opcua/productsAcceptableSub/::Program:Cube.Admin.ProdProcessedCount', setValue: setProducedNodeValue },
-            { url: 'http://localhost:8080/opcua/stateCurrentSub/::Program:Cube.Status.StateCurrent', setValue: setStateCurrentValue },
-            { url: 'http://localhost:8080/opcua/recipeCurrentSub/::Program:Cube.Admin.Parameter%5B0%5D.Value', setValue: setRecipeCurrentValue },
-            { url: 'http://localhost:8080/opcua/sensorHumiditySub/::Program:Cube.Status.Parameter%5B2%5D.Value', setValue: setSensorHumidityValue },
-            { url: 'http://localhost:8080/opcua/sensorTemperatureSub/::Program:Cube.Status.Parameter%5B3%5D.Value', setValue: setSensorTemperatureValue },
-            { url: 'http://localhost:8080/opcua/sensorVibrationSub/::Program:Cube.Status.Parameter%5B4%5D.Value', setValue: setSensorVibrationValue },
-            { url: 'http://localhost:8080/opcua/batchIdCurrentSub/::Program:Cube.Status.Parameter%5B0%5D.Value', setValue: setBatchIdCurrentValue },
-            { url: 'http://localhost:8080/opcua/machineSpeedCurrentSub/::Program:Cube.Status.CurMachSpeed', setValue: setMachineSpeedCurrentValue },
-            { url: 'http://localhost:8080/opcua/quantityCurrentSub/::Program:Cube.Status.Parameter%5B1%5D.Value', setValue: setQuantityCurrentValue },
+            { url: 'http://localhost:8080/opcua/productsDefectiveSub', setValue: setDefectNodeValue },
+            { url: 'http://localhost:8080/opcua/productsAcceptableSub', setValue: setProducedNodeValue },
+            { url: 'http://localhost:8080/opcua/stateCurrentSub', setValue: setStateCurrentValue },
+            { url: 'http://localhost:8080/opcua/recipeCurrentSub', setValue: setRecipeCurrentValue },
+            { url: 'http://localhost:8080/opcua/sensorHumiditySub', setValue: setSensorHumidityValue },
+            { url: 'http://localhost:8080/opcua/sensorTemperatureSub', setValue: setSensorTemperatureValue },
+            { url: 'http://localhost:8080/opcua/sensorVibrationSub', setValue: setSensorVibrationValue },
+            { url: 'http://localhost:8080/api/batch/latestBatchId', setValue: setBatchIdCurrentValue },
+            { url: 'http://localhost:8080/opcua/machineSpeedCurrentSub', setValue: setMachineSpeedCurrentValue },
+            { url: 'http://localhost:8080/opcua/quantityCurrentSub', setValue: setQuantityCurrentValue },
         ];
 
         // Fetch node values when the component mounts
