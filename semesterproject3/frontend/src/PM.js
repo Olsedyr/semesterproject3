@@ -1,66 +1,69 @@
-// PM.js
-
-import React, { useState, useEffect } from 'react';
-import './PMstyles.css';
+import React, { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
+import axios from "axios";
 
 const Login = () => {
-    // State for quantity and maintenance progress
     const [quantity, setQuantity] = useState(0);
     const [maintenanceProgress, setMaintenanceProgress] = useState(36);
-    const [selectedRecipe, setSelectedRecipe] = useState('Pilsner'); // Set the default recipe
+    const [selectedRecipe, setSelectedRecipe] = useState('Pilsner');
     const [batchID, setBatchID] = useState(null);
     const [batchStatus, setBatchStatus] = useState("Not In Progress");
-    const [productionStartTime, setProductionStartTime] = useState("Production Not Started");
+    const [oee, setOEE] = useState(0);
+    const [availability, setAvailability] = useState(0.85);
+    const [performance, setPerformance] = useState(0.90);
+    const [quality, setQuality] = useState(0.95);
 
+
+    const [productionStartTime, setProductionStartTime] = useState(null);
+
+
+    const [defectNodeValue, setDefectNodeValue] = useState(null);
+    const [producedNodeValue, setProducedNodeValue] = useState(null);
+    const [stateCurrentValue, setStateCurrentValue] = useState(null);
+    const [recipeCurrentValue, setRecipeCurrentValue] = useState(null);
+    const [sensorHumidityValue, setSensorHumidityValue] = useState(null);
+    const [sensorTemperatureValue, setSensorTemperatureValue] = useState(null);
+    const [sensorVibrationValue, setSensorVibrationValue] = useState(null);
+    const [batchIdCurrentValue, setBatchIdCurrentValue] = useState(null);
+    const [machineSpeedCurrentValue, setMachineSpeedCurrentValue] = useState(null);
+    const machineSpeedInputRef = useRef(null);
+
+
+    const [quantityCurrentValue, setQuantityCurrentValue] = useState(null);
+
+    const handleSpeedChange = () => {
+        const newSpeed = machineSpeedInputRef.current.value;
+        setMachineSpeedCurrentValue(newSpeed);
+    };
 
     const handleStartProduction = () => {
-        generateRandomBatchID(); // Generate a new batch ID every time "Start Production" is clicked
+        generateRandomBatchID();
         setBatchStatus("In Progress");
         setProductionStartTime(new Date().toLocaleString());
     };
 
-// Function to generate a random batch ID
+
     const generateRandomBatchID = () => {
         const newBatchID = Math.floor(Math.random() * 1000000);
-        setBatchID(newBatchID);
+        setBatchIdCurrentValue(newBatchID);
     };
-
 
     const handleRecipeChange = (event) => {
         const selectedRecipe = event.target.value;
         setSelectedRecipe(selectedRecipe);
     };
 
-    // State for sensor data
-    const [sensorData, setSensorData] = useState({
-        temperature: 0.0,
-        batchID: 0.0,
-        produced: 0.0,
-        humidity: 0.0,
-        amountToProduce: 0.0,
-        acceptableProduct: 0.0,
-        vibration: 0.0,
-        productsPerMinute: 0.0,
-        defectProduct: 0.0,
-    });
-
-    // Function to handle quantity change
     const handleQuantityChange = (event) => {
         const value = parseInt(event.target.value, 10) || 0;
 
         // Update the quantity state
         setQuantity(value);
 
-        // Update the amountToProduce in sensorData
-        setSensorData((prevSensorData) => ({
-            ...prevSensorData,
-            amountToProduce: value,
-        }));
+        // Update the quantityCurrentValue state
+        setQuantityCurrentValue(value);
     };
 
-    // Effect to update the width of the maintenance progress
     useEffect(() => {
         const maintenanceBar = document.getElementById('maintenanceBar');
         if (maintenanceBar) {
@@ -68,118 +71,92 @@ const Login = () => {
         }
     }, [maintenanceProgress]);
 
-    // Effect to fetch and update sensor data
-    useEffect(() => {
-        // Fetch and update sensor data from your backend or any other source
-        // For now, just setting dummy data
-        const dummySensorData = {
-            temperature: 25.5,
-            batchID: 123,
-            produced: 500.0,
-            humidity: 45.0,
-            amountToProduce: quantity,
-            acceptableProduct: 480.0,
-            vibration: 0.8,
-            productsPerMinute: 50.0,
-            defectProduct: 20.0,
-        };
 
-        setSensorData(dummySensorData);
-    }, [quantity]); // Empty dependency array to run this effect once on mount
 
-    // Placeholder data for the production speed graph
-    const productionSpeedData = Array.from({ length: 11 }, (_, index) => ({
+    const TempOverTimeData = Array.from({ length: 11 }, (_, index) => ({
         x: index,
         y: Math.floor(Math.random() * 101),
     }));
 
-    // Effect to create and destroy the production speed chart
+    const calculateOEE = () => {
+        const calculatedOEE = availability * performance * quality * 100;
+        setOEE(calculatedOEE);
+    };
+
     useEffect(() => {
-        const productionSpeedChart = new Chart(document.getElementById('productionSpeedChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                datasets: [{
-                    label: 'Production Speed',
-                    data: productionSpeedData,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    fill: false,
-                }],
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'linear',
-                        position: 'bottom',
-                        min: 0,
-                        max: 10,
-                        ticks: {
-                            callback: (value) => `${value}min`,
-                        },
-                    },
-                    y: {
-                        type: 'linear',
-                        position: 'left',
-                        min: 0,
-                        max: 100,
-                        ticks: {
-                            callback: (value) => `${value}%`,
-                        },
-                    },
-                },
-            },
+        calculateOEE();
+    }, [availability, performance, quality]);
+
+    useEffect(() => {
+        const fetchData = async (url, setValue) => {
+            try {
+                const response = await axios.get(url);
+                setValue(response.data);
+            } catch (error) {
+                console.error('Error fetching node value:', error);
+            }
+        };
+
+        const endpoints = [
+            { url: 'http://localhost:8080/opcua/productsDefectiveSub/::Program:Cube.Admin.ProdDefectiveCount', setValue: setDefectNodeValue },
+            { url: 'http://localhost:8080/opcua/productsAcceptableSub/::Program:Cube.Admin.ProdProcessedCount', setValue: setProducedNodeValue },
+            { url: 'http://localhost:8080/opcua/stateCurrentSub/::Program:Cube.Status.StateCurrent', setValue: setStateCurrentValue },
+            { url: 'http://localhost:8080/opcua/recipeCurrentSub/::Program:Cube.Admin.Parameter%5B0%5D.Value', setValue: setRecipeCurrentValue },
+            { url: 'http://localhost:8080/opcua/sensorHumiditySub/::Program:Cube.Status.Parameter%5B2%5D.Value', setValue: setSensorHumidityValue },
+            { url: 'http://localhost:8080/opcua/sensorTemperatureSub/::Program:Cube.Status.Parameter%5B3%5D.Value', setValue: setSensorTemperatureValue },
+            { url: 'http://localhost:8080/opcua/sensorVibrationSub/::Program:Cube.Status.Parameter%5B4%5D.Value', setValue: setSensorVibrationValue },
+            { url: 'http://localhost:8080/opcua/batchIdCurrentSub/::Program:Cube.Status.Parameter%5B0%5D.Value', setValue: setBatchIdCurrentValue },
+            { url: 'http://localhost:8080/opcua/machineSpeedCurrentSub/::Program:Cube.Status.CurMachSpeed', setValue: setMachineSpeedCurrentValue },
+            { url: 'http://localhost:8080/opcua/quantityCurrentSub/::Program:Cube.Status.Parameter%5B1%5D.Value', setValue: setQuantityCurrentValue },
+        ];
+
+        // Fetch node values when the component mounts
+        endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
+
+        // Fetch node values every second
+        const intervalId = setInterval(() => {
+            endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
+        }, 1000);
+
+        // Clear the interval on component unmount
+        return () => clearInterval(intervalId);
+    }, []);
+
+
+    useEffect(() => {
+        const TempOverTimeChart = new Chart(document.getElementById('TempOverTimeChart').getContext('2d'), {
+            // ... (chart options)
         });
 
         return () => {
-            productionSpeedChart.destroy();
+            TempOverTimeChart.destroy();
         };
-    }, []); // Empty dependency array to run this effect once on mount
-
-
-
-
-    const currentBatchInfo = {
-        batchStatus: 'In Progress',
-        productionStartTime: new Date(),
-        recipe: 'Pilsner',
-        quantityProduced: 250,
-        defects: 5,
-    };
-
-
-
-
-
-
+    }, []);
 
     const saveProductionDataAsPDF = () => {
         console.log('Button clicked!');
-
         // Create a new instance of jsPDF
         const pdfDoc = new jsPDF();
-
         // Title
         pdfDoc.setFontSize(20);
         pdfDoc.setTextColor(33, 33, 33); // Set text color to black
         pdfDoc.text('Batch Information', 20, 20);
-
         // Batch Information
         const batchInfoText = `
-        Production Start Time: ${currentBatchInfo.productionStartTime.toLocaleString()}
+        Production Start Time: ${productionStartTime}
         Recipe: ${selectedRecipe}
-        Quantity Produced: ${currentBatchInfo.quantityProduced} units
-        Amounts To Produce: ${quantity} units
-        Products per Minute: ${currentBatchInfo.productsPerMinute}
-        Acceptable Product: ${currentBatchInfo.acceptableProduct}
-        Defects: ${currentBatchInfo.defects} units (${((currentBatchInfo.defects / currentBatchInfo.quantityProduced) * 100).toFixed(2)}%)
+        Quantity Produced: ${producedNodeValue} units
+        Amounts To Produce: ${quantityCurrentValue} units
+        Products per Minute: ${''}
+        Acceptable Product: ${''}
+        Defects: ${defectNodeValue} units (${((defectNodeValue / producedNodeValue) * 100).toFixed(2)}%}%)
     `;
-
         // Add batch information
         pdfDoc.setFontSize(14);
         pdfDoc.setTextColor(33, 33, 33); // Set text color to black
         pdfDoc.text(batchInfoText, 20, 30);
-
         // Save the PDF with a specific name
+        // ... (more PDF content)
         pdfDoc.save('ProductionData.pdf');
     };
 
@@ -191,13 +168,38 @@ const Login = () => {
                 <h1>Production Manager Dashboard</h1>
             </div>
             <div className="dashboard">
+
                 {/* Production Speed */}
                 <div className="info-box">
                     <h2>Production Speed</h2>
                     <div className="box-content">
-                        <canvas id="productionSpeedChart"></canvas>
+
+                        {/* Speed Selector */}
+                        <div className="speed-selector">
+                            <label htmlFor="speedSelector">Select Speed:</label>
+                            <input
+                                type="number"
+                                id="speedSelector"
+                                ref={machineSpeedInputRef}
+                                value={machineSpeedCurrentValue === null ? '' : machineSpeedCurrentValue}
+                                min="1"
+                                max="10"
+                                onChange={handleSpeedChange}
+                            />
+                        </div>
                     </div>
                 </div>
+
+
+                {/* Temperature over time */}
+                <div className="info-box">
+                    <h2>Temperature Over Time</h2>
+                    <div className="box-content">
+                        <canvas id="TempOverTimeChart"></canvas>
+                    </div>
+                </div>
+
+
 
                 {/* Quantity */}
                 <div className="info-box">
@@ -294,9 +296,9 @@ const Login = () => {
                 <div className="info-box">
                     <h2>Sensor Data</h2>
                     <div className="box-content" id="sensorDataBox">
-                        <p className="sensor-data-item"><strong>Temperature:</strong> <span className="sensor-data-value">{sensorData.temperature}</span></p>
-                        <p className="sensor-data-item"><strong>Humidity:</strong> <span className="sensor-data-value">{sensorData.humidity}</span></p>
-                        <p className="sensor-data-item"><strong>Vibration:</strong> <span className="sensor-data-value">{sensorData.vibration}</span></p>
+                        <p className="sensor-data-item"><strong>Temperature:</strong> <span className="sensor-data-value">{sensorTemperatureValue !== null ? sensorTemperatureValue : 'Loading...'}</span></p>
+                        <p className="sensor-data-item"><strong>Humidity:</strong> <span className="sensor-data-value">{sensorHumidityValue !== null ? sensorHumidityValue : 'Loading...'}</span></p>
+                        <p className="sensor-data-item"><strong>Vibration:</strong> <span className="sensor-data-value">{sensorVibrationValue !== null ? sensorVibrationValue : 'Loading...'}</span></p>
                     </div>
                 </div>
 
@@ -306,28 +308,39 @@ const Login = () => {
                     <h2>Current Batch Info</h2>
                     <div className="box-content" id="currentBatchInfoBox">
 
-                        <p><strong>Batch ID:</strong> {batchID}</p>
 
+                        <p><strong>Batch ID:</strong> {batchIdCurrentValue !== null ? batchIdCurrentValue : 'Loading...'}</p>
 
                         <p><strong>Batch Status:</strong> {batchStatus}</p>
 
+                        <p><strong>Machine Status:</strong> {stateCurrentValue}</p>
+
                         <p><strong>Production Start Time:</strong> {productionStartTime}</p>
 
-                        <p><strong>Recipe:</strong> {selectedRecipe}</p>
+                        <p><strong>Recipe:</strong> {recipeCurrentValue !== null ? recipeCurrentValue : 'Loading...'}</p>
 
-                        <p><strong>Quantity Produced:</strong> {currentBatchInfo.quantityProduced} units</p>
+                        <p><strong>Quantity Produced:</strong> {producedNodeValue !== null ? producedNodeValue : 'Loading...'} units</p>
 
-                        <p><strong>Amounts To Produce:</strong> {quantity}</p>
+                        <p><strong>Amounts To Produce:</strong> {quantityCurrentValue !== null ? quantityCurrentValue : 'Loading...'}</p>
 
-                        <p><strong>Products pr. Minute:</strong> {currentBatchInfo.productsPerMinute}</p>
+                        <p><strong>Products pr. Minute:</strong> {}</p>
 
-                        <p><strong>Acceptable Product:</strong> {currentBatchInfo.acceptableProduct}</p>
+                        <p><strong>Acceptable Product:</strong> {}</p>
 
-                        <p><strong>Defects:</strong> {currentBatchInfo.defects} units ({((currentBatchInfo.defects / currentBatchInfo.quantityProduced) * 100).toFixed(2)}%)</p>
+                        <p><strong>Defects:</strong> {defectNodeValue !== null ? defectNodeValue : 'Loading...'} units ({((defectNodeValue / producedNodeValue) * 100).toFixed(2)}%)</p>
 
 
                     </div>
                 </div>
+
+                {/* OEE */}
+                <div className="info-box">
+                    <h2>Overall Equipment Effectiveness (OEE)</h2>
+                    <div className="box-content">
+                        <p><strong>OEE:</strong> {oee.toFixed(2)}%</p>
+                    </div>
+                </div>
+
             </div>
 
 

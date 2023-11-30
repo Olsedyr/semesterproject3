@@ -63,6 +63,15 @@ body::before {
     overflow: visible;
 }
 
+.quantity-box {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-box button {
+    margin: 0 5px;
+}
+
 .maintenance-bar {
     height: 20px;
     background-color: #4CAF50;
@@ -77,39 +86,39 @@ body::before {
 
 
 .button{
-   align-items: center;
-   appearance: none;
-   background-color: #fff;
-   border-radius: 24px;
-   border-style: none;
-   box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px,rgba(0, 0, 0, .14) 0 6px 10px 0,rgba(0, 0, 0, .12) 0 1px 18px 0;
-   box-sizing: border-box;
-   color: #3c4043;
-   cursor: pointer;
-   display: inline-flex;
-   fill: currentcolor;
-   font-family: "Google Sans",Roboto,Arial,sans-serif;
-   font-size: 14px;
-   font-weight: 500;
-   height: 40px;
-   justify-content: center;
-   letter-spacing: .25px;
-   line-height: normal;
-   max-width: 90%;
-   overflow: visible;
-   padding: 2px 24px;
-   position: relative;
-   text-align: center;
-   text-transform: none;
-   transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1),opacity 15ms linear 30ms,transform 270ms cubic-bezier(0, 0, .2, 1) 0ms;
-   user-select: none;
-   -webkit-user-select: none;
-   touch-action: manipulation;
-   width: auto;
-   will-change: transform,opacity;
-   z-index: 0;
-   margin-right: 20px;
-   margin-bottom: 20px;
+    align-items: center;
+    appearance: none;
+    background-color: #fff;
+    border-radius: 24px;
+    border-style: none;
+    box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px,rgba(0, 0, 0, .14) 0 6px 10px 0,rgba(0, 0, 0, .12) 0 1px 18px 0;
+    box-sizing: border-box;
+    color: #3c4043;
+    cursor: pointer;
+    display: inline-flex;
+    fill: currentcolor;
+    font-family: "Google Sans",Roboto,Arial,sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    height: 40px;
+    justify-content: center;
+    letter-spacing: .25px;
+    line-height: normal;
+    max-width: 90%;
+    overflow: visible;
+    padding: 2px 24px;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+    transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1),opacity 15ms linear 30ms,transform 270ms cubic-bezier(0, 0, .2, 1) 0ms;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: auto;
+    will-change: transform,opacity;
+    z-index: 0;
+    margin-right: 20px;
+    margin-bottom: 20px;
 }
 
 .button:hover {
@@ -160,7 +169,34 @@ body::before {
     transition: width 0.3s ease-in-out;
 }
 
+.quantity-box input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 250px;
+}
 
+.quantity-box input:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 0 5px rgba(66, 133, 244, 0.5);
+}
+
+.recipe-dropdown {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.recipe-dropdown::after {
+    content: '\25BC';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
 
 .ingredient-progress {
     margin-bottom: 20px;
