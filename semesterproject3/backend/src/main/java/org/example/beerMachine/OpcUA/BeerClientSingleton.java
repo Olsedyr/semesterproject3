@@ -28,7 +28,8 @@ public class BeerClientSingleton {
     }
 
     private static OpcUaClient createAndConnectOPCUAClient() throws Exception {
-        String serverEndpointUrl = "opc.tcp://127.0.0.1:4840";
+        String serverEndpointUrl = "opc.tcp://127.0.0.1:4840"; //Software simulation
+        // String serverEndpointUrl = "opc.tcp://192.168.0.122:4840"; // Machine Simulation
         String username = "sdu";
         String password = "1234";
 

@@ -1,4 +1,4 @@
-package org.example.beerMachine.OpcUA.subscriptions;
+package org.example.beerMachine.service.subscriptionServices;
 
 import jakarta.annotation.PostConstruct;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
@@ -24,11 +24,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
-public class SensorTemperatureSub {
+public class SensorVibrationSub {
 
     final OpcUaClient client;
     private final Map<NodeId, Object> nodeValues;
-    public SensorTemperatureSub() {
+    public SensorVibrationSub() {
         this.client = BeerClientSingleton.getInstance() ;
         this.nodeValues = new ConcurrentHashMap<>();
     }
@@ -40,7 +40,7 @@ public class SensorTemperatureSub {
             // Adapted from OPC UA files from the course Industrial cyber-physical systems
             /* Node endpoints */
             NodeId[] nodeIdsToMonitor = {
-                    new NodeId(6, "::Program:Cube.Status.Parameter[3].Value")
+                    new NodeId(6, "::Program:Cube.Status.Parameter[4].Value")
             };
 
             List<MonitoredItemCreateRequest> monitoredItemCreateRequests = new ArrayList<>();

@@ -9,19 +9,17 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.example.MaintenanceDetails;
 import org.example.PackMLCommand;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
+@Service
 public class MachineController {
-
     private PackMLCommand packMLCommandHandler =  PackMLCommand.START;
-
     final OpcUaClient client = BeerClientSingleton.getInstance();
 
     public MachineController() {
     }
-
 
     public void readProductsProcessed() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Admin.ProdProcessedCount");
@@ -39,26 +37,94 @@ public class MachineController {
         return (int) readNodeValue(nodeId);
     }
 
-    public void readRecipeCurrent() throws ExecutionException, InterruptedException {
+    public float readRecipeCurrent() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Admin.Parameter[0].Value");
         System.out.println("Current recipe: " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
     }
-
+    public float readRecipeNext() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Cube.Command.Parameter[1].Value");
+        System.out.println("Next recipe: " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
     public void readBatchIdCurrent() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
         System.out.println("Current Batch ID: " + readNodeValue(nodeId));
     }
+    public void readBatchIdNext() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Cube.Command.Parameter[0].Value");
+        System.out.println("Next Batch ID: " + readNodeValue(nodeId));
+    }
 
-    public void readQuantityCurrent() throws ExecutionException, InterruptedException {
+    public float readQuantityCurrent() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Status.Parameter[1].Value");
         System.out.println("Current quantity: " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
+    public float readQuantityNext() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Cube.Command.Parameter[2].Value");
+        System.out.println("Next quantity: " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
     }
 
-    public void readMachineSpeedCurrent() throws ExecutionException, InterruptedException {
+    public float readMachineSpeedCurrent() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Status.CurMachSpeed");
-        System.out.println("Current machine speed: " + readNodeValue(nodeId));
+        System.out.println("The current machine speed (from 0-100): " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
+    public float readMachineSpeedCurrentProductsPerMinute() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Cube.Status.MachSpeed");
+        System.out.println("Current machine speed in products per minute: " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
     }
 
+    public float readMachineSpeedSet() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Cube.Command.MachSpeed");
+        System.out.println("The set machine speed is : " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
+    public float readIngredientBarley() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Inventory.Barley");
+        System.out.println("Barley left : " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
+    public float readIngredientHops() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Inventory.Hops");
+        System.out.println("Hops left : " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
+    public float readIngredientMalt() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Inventory.Malt");
+        System.out.println("Malt left : " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
+    public float readIngredientWheat() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Inventory.Wheat");
+        System.out.println("Wheat left : " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
+    public float readIngredientYeast() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Inventory.Yeast");
+        System.out.println("Yeast left : " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
+
+    public float readHumidity() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Cube.Status.Parameter[2].Value");
+        System.out.println("Humidity : " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
+
+    public float readTemperature() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Cube.Status.Parameter[3].Value");
+        System.out.println("Temperature : " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
+    public float readVibration() throws ExecutionException, InterruptedException {
+        NodeId nodeId = new NodeId(6, "::Program:Cube.Status.Parameter[4].Value");
+        System.out.println("Vibration : " + readNodeValue(nodeId));
+        return (float) readNodeValue(nodeId);
+    }
 
     public void writeRecipeValue(int value) throws UaException, ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.Parameter[1].Value");
@@ -85,11 +151,11 @@ public class MachineController {
         }
     }
 
-    public void writeBatchIdValue(int value) throws UaException, ExecutionException, InterruptedException {
+    public void writeBatchIdValueNext(int value) throws UaException, ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.Parameter[0].Value");
         StatusCode statusCode = writeValueToNode(nodeId, value);
         if (statusCode.isGood()) {
-            System.out.println("Batch Id set to " + value);
+            System.out.println("Next Batch Id set to " + value);
         }
     }
 
@@ -124,9 +190,10 @@ public class MachineController {
     }
 
 
-    public void startMachine() throws ExecutionException, InterruptedException {
+    public Boolean startMachine() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
         final int value = 2;
+        Boolean started = false;
         int state = readStateCurrent();
         if (state == 4){ // State must be idle
             // set the batchId (needs database value)
@@ -135,25 +202,44 @@ public class MachineController {
             // start the machine
             StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();
             if (statusCode.isGood()) {
-                System.out.println("Write operation successful. Machine is running");
+                setChangeRequestTrue();
+                Thread.sleep(1000); // Wait for setChangeRequestTrue() to finish
+                state = readStateCurrent(); // check if the machine has started, or has completed a previous batch.
+                Thread.sleep(1000); // Wait for state = readStateCurrent() to finish
+                if (state == 6) {
+                    System.out.println("Write operation successful. Machine is running");
+                    started = true;
+
+                }
+                else if (state== 17){
+                    System.out.println("Write operation successful. Machine is is completing, reset the machine.");
+                    started = false;
+                }
+                else {
+                    System.err.println("Write operation failed. Machine is NOT running: " + statusCode);
+                    started = false;
+                }
             } else {
                 System.err.println("Write operation failed. Machine is NOT running: " + statusCode);
             }
-            setChangeRequestTrue();
+
         } else {
             System.err.println("Machine state is " + state + ".");
             System.err.println("Machine must be idle, before you can start it (reset the machine)");
         }
+        return started;
     }
 
-    public void resetMachine() throws ExecutionException, InterruptedException {
+    public Boolean resetMachine() throws ExecutionException, InterruptedException {
         NodeId nodeId  = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
         final int value = 1;
+        Boolean reset = false;
         int state = readStateCurrent();
         if (state == 17 || state == 2){ // state must be complete or stopped
             StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();
             if (statusCode.isGood()) {
                 System.out.println("Write operation successful. Machine is reset");
+                reset = true;
             } else {
                 System.err.println("Write operation failed. Machine is NOT reset: " + statusCode);
             }
@@ -162,16 +248,19 @@ public class MachineController {
             System.err.println("Machine state is " + state + ".");
             System.err.println("Machine state must be completed or stopped, before you can reset it");
         }
+        return reset;
     }
 
-    public void stopMachine() throws ExecutionException, InterruptedException {
+    public Boolean stopMachine() throws ExecutionException, InterruptedException {
         NodeId nodeId  = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
         final int value = 3;
+        Boolean stopped = false;
         int state = readStateCurrent();
         if (state !=2 && state !=9 && state !=8 && state !=1 ){ // state must not be aborted, aborting, clearing or stopped
             StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();
             if (statusCode.isGood()) {
                 System.out.println("Write operation successful. Machine is stopped");
+                stopped = true;
             } else {
                 System.err.println("Write operation failed. Machine is NOT stopped: " + statusCode);
             }
@@ -180,16 +269,19 @@ public class MachineController {
             System.err.println("Machine state is " + state + ".");
             System.err.println("Failed, machine is already aborted");
         }
+        return stopped;
     }
 
-    public void abortMachine() throws ExecutionException, InterruptedException {
+    public Boolean abortMachine() throws ExecutionException, InterruptedException {
         NodeId nodeId  = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
         final int value = 4;
+        Boolean aborted = false;
         int state = readStateCurrent();
         if (state !=9 ){ // state must not be aborted
             StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();
             if (statusCode.isGood()) {
                 System.out.println("Write operation successful. Machine is aborted");
+                aborted = true;
             } else {
                 System.err.println("Write operation failed. Machine is NOT aborted: " + statusCode);
             }
@@ -198,16 +290,19 @@ public class MachineController {
             System.err.println("Machine state is " + state + ".");
             System.err.println("Machine is already stopped or aborted");
         }
+        return aborted;
     }
 
-    public void clearMachine() throws ExecutionException, InterruptedException {
+    public Boolean clearMachine() throws ExecutionException, InterruptedException {
         NodeId nodeId  = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
         final int value = 5;
+        Boolean cleared = false;
         int state = readStateCurrent();
         if (state ==9 ){ // state must be aborted
             StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();
             if (statusCode.isGood()) {
                 System.out.println("Write operation successful. Machine is cleared");
+                cleared = true;
             } else {
                 System.err.println("Write operation failed. Machine is NOT cleared: " + statusCode);
             }
@@ -216,6 +311,7 @@ public class MachineController {
             System.err.println("Machine state is " + state + ".");
             System.err.println("Machine state must be aborted, before you can clear it");
         }
+        return cleared;
     }
     private void setChangeRequestTrue() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.CmdChangeRequest");

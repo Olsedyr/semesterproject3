@@ -1,11 +1,7 @@
 package org.example;
 
-import org.example.beerMachine.model.Users;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.sql.Time;
-import java.time.LocalDateTime;
 
 @SpringBootApplication
 public class Semesterproject3Application {
@@ -13,4 +9,14 @@ public class Semesterproject3Application {
 	public static void main(String[] args) {
 
 		SpringApplication.run(Semesterproject3Application.class, args);}
+
+//	@Bean
+//	CommandLineRunner commandLineRunner (BatchRepository batchRepository){
+//
+//        return args -> {
+//			Batch hej = new Batch(1,122,12);
+//			batchRepository.save(hej);
+//		};
+//
+//    }
 }

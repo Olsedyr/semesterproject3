@@ -14,4 +14,6 @@ public interface BatchRepository extends JpaRepository<Batch,Long> { //Long beca
     @Query("SELECT b FROM Batch b WHERE b.recipe = ?1")
     Optional<Batch> findBatchByRecipe(int recipe);
 
+    Optional<Batch> findFirstByOrderByStartTimeDesc();
+
 }

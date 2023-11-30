@@ -1,7 +1,5 @@
 package org.example;
 
-import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
-import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 import org.example.beerMachine.OpcUA.MachineController;
 
 import java.util.Scanner;
@@ -25,7 +23,7 @@ public class Main {
 
         // Config batch
         //*
-        machineController.writeQuantityValue(100);
+        machineController.writeQuantityValue(7);
         machineController.writeMachineSpeedValue(20);
         machineController.writeRecipeValue(1);
         //*/
@@ -48,13 +46,13 @@ public class Main {
         // let the example run forever
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.print("Enter a command (restart/start/stop/abort/clear): ");
+            System.out.print("Enter a command (reset/start/stop/abort/clear): ");
             String userInput = scanner.nextLine();
 
             // Parse the user input to extract the command and target
             String[] parts = userInput.split(" ");
             if (parts.length == 1) {
-                if (parts[0].equalsIgnoreCase("restart")){
+                if (parts[0].equalsIgnoreCase("reset")){
                     machineController.resetMachine();
                 } else if (parts[0].equalsIgnoreCase("start")){
                     machineController.startMachine();
