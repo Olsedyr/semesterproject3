@@ -99,7 +99,7 @@ public class SubscriptionToDatabaseController {
         // If a latest batch exists, update its values
         if (latestBatchOptional.isPresent()) {
             Batch latestBatch = latestBatchOptional.get();
-            if(latestBatch.getStatus().equals("started")){
+            if (latestBatch.getStatus().equals("started")) {
                 latestBatch.setAcceptableProducts(acceptableProducts);
                 latestBatch.setDefectProducts(defectProducts);
                 latestBatch.setIngredientBarleyStop(ingredientBarley);
@@ -109,22 +109,22 @@ public class SubscriptionToDatabaseController {
                 latestBatch.setIngredientYeastStop(ingredientYeast);
 
                 // Update highest/lowest sensor values
-                if(humiditySubValue > latestBatch.getHumidityHighest()){
+                if (humiditySubValue > latestBatch.getHumidityHighest()) {
                     latestBatch.setHumidityHighest(humiditySubValue);
                 }
-                if(humiditySubValue < latestBatch.getHumidityLowest()){
+                if (humiditySubValue < latestBatch.getHumidityLowest()) {
                     latestBatch.setHumidityLowest(humiditySubValue);
                 }
-                if(temperatureSubValue > latestBatch.getTemperatureHighest()){
+                if (temperatureSubValue > latestBatch.getTemperatureHighest()) {
                     latestBatch.setTemperatureHighest(temperatureSubValue);
                 }
-                if(temperatureSubValue < latestBatch.getTemperatureLowest()){
+                if (temperatureSubValue < latestBatch.getTemperatureLowest()) {
                     latestBatch.setTemperatureLowest(temperatureSubValue);
                 }
-                if(vibrationSubValue > latestBatch.getVibrationHighest()){
+                if (vibrationSubValue > latestBatch.getVibrationHighest()) {
                     latestBatch.setVibrationHighest(vibrationSubValue);
                 }
-                if(vibrationSubValue < latestBatch.getVibrationLowest()){
+                if (vibrationSubValue < latestBatch.getVibrationLowest()) {
                     latestBatch.setVibrationLowest(vibrationSubValue);
                 }
 
@@ -150,10 +150,10 @@ public class SubscriptionToDatabaseController {
             Batch latestBatch = latestBatchOptional.get();
 
             // If the batch is completed, set it to "completed" in the database
-            if(currentStatus == 17 && latestBatch.getStatus().equals("started")
-                    && latestBatch.getAcceptableProducts() + latestBatch.getDefectProducts() == latestBatch.getQuantity()){
-               latestBatch.setStatus("completed");
-               latestBatch.setFinishTime(LocalDateTime.now());
+            if (currentStatus == 17 && latestBatch.getStatus().equals("started")
+                    && latestBatch.getAcceptableProducts() + latestBatch.getDefectProducts() == latestBatch.getQuantity()) {
+                latestBatch.setStatus("completed");
+                latestBatch.setFinishTime(LocalDateTime.now());
             }
 
             // Save the updated batch entity
@@ -171,6 +171,7 @@ public class SubscriptionToDatabaseController {
             return 0; // Change to handle default value or throw an exception
         }
     }
+
     private float convertToFloat(Object value) {
         if (value instanceof Number) {
             return ((Number) value).floatValue();
@@ -195,20 +196,6 @@ public class SubscriptionToDatabaseController {
         return stateCurrentSub.getNodeValue(parsedNodeId);
     }
 
-
-//
-//    @GetMapping("/recipeCurrentSub")
-//    public Object getRecipeCurrentSubValue() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Admin.Parameter[0].Value");
-//        return recipeCurrentSub.getNodeValue(parsedNodeId);
-//    }
-//    @GetMapping("/recipeNextSub")
-//    public Object getRecipeNextSubValue() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Command.Parameter[1].Value");
-//        return recipeNextSub.getNodeValue(parsedNodeId);
-//    }
-//
-
     public Object getSensorHumiditySubValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Status.Parameter[2].Value");
         return sensorHumiditySub.getNodeValue(parsedNodeId);
@@ -225,44 +212,7 @@ public class SubscriptionToDatabaseController {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Status.Parameter[4].Value");
         return sensorVibrationSub.getNodeValue(parsedNodeId);
     }
-//
-//    @GetMapping("/batchIdCurrentSub")
-//    public Object getBatchIdCurrentSubValue() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
-//        return batchIdCurrentSub.getNodeValue(parsedNodeId);
-//    }
-//    @GetMapping("/batchIdNextSub")
-//    public Object getBatchIdNextSubValue() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Command.Parameter[0].Value");
-//        return batchIdNextSub.getNodeValue(parsedNodeId);
-//    }
-//
-//    @GetMapping("/machineSpeedCurrentSub")
-//    public Object getMachineSpeedCurrentSubValue() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Status.CurMachSpeed");
-//        return machineSpeedCurrentSub.getNodeValue(parsedNodeId);
-//    }
-//    @GetMapping("/machineSpeedCurrentProductsPerMinuteSub")
-//    public Object getMachineSpeedCurrentProductsPerMinuteSub() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Status.MachSpeed");
-//        return machineSpeedCurrentProductsPerMinuteSub.getNodeValue(parsedNodeId);
-//    }
-//    @GetMapping("/machineSpeedNextSub")
-//    public Object getMachineSpeedNextSubValue() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Command.MachSpeed");
-//        return machineSpeedNextSub.getNodeValue(parsedNodeId);
-//    }
-//
-//    @GetMapping("/quantityCurrentSub")
-//    public Object getQuantityCurrentSubValue() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Status.Parameter[1].Value");
-//        return quantityCurrentSub.getNodeValue(parsedNodeId);
-//    }
-//    @GetMapping("/quantityNextSub")
-//    public Object getQuantityNextSubValue() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Command.Parameter[2].Value");
-//        return quantityNextSub.getNodeValue(parsedNodeId);
-//    }
+
 
     public Object getIngredientBarleyValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Inventory.Barley");
@@ -273,31 +223,20 @@ public class SubscriptionToDatabaseController {
         NodeId parsedNodeId = new NodeId(6, "::Program:Inventory.Hops");
         return ingredientHops.getNodeValue(parsedNodeId);
     }
+
     public Object getIngredientMaltValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Inventory.Malt");
         return ingredientMalt.getNodeValue(parsedNodeId);
     }
+
     public Object getIngredientWheatValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Inventory.Wheat");
         return ingredientWheat.getNodeValue(parsedNodeId);
     }
+
     public Object getIngredientYeastValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Inventory.Yeast");
         return ingredientYeast.getNodeValue(parsedNodeId);
     }
-//    @GetMapping("/maintenanceCounter")
-//    public Object getMaintenanceCounterValue() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Maintenance.Counter");
-//        return maintenanceCounter.getNodeValue(parsedNodeId);
-//    }
-//    @GetMapping("/maintenanceState")
-//    public Object getMaintenanceStateValue() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Maintenance.State");
-//        return maintenanceState.getNodeValue(parsedNodeId);
-//    }
-//    @GetMapping("/maintenanceTrigger")
-//    public Object getMaintenanceTriggerValue() {
-//        NodeId parsedNodeId = new NodeId(6, "::Program:Maintenance.Trigger");
-//        return maintenanceTrigger.getNodeValue(parsedNodeId);
-//    }
+
 }

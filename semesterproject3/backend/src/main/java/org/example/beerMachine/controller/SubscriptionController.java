@@ -92,6 +92,7 @@ public class SubscriptionController {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Admin.Parameter[0].Value");
         return recipeCurrentSub.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/recipeNextSub")
     public Object getRecipeNextSubValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Command.Parameter[1].Value");
@@ -121,6 +122,7 @@ public class SubscriptionController {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
         return batchIdCurrentSub.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/batchIdNextSub")
     public Object getBatchIdNextSubValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Command.Parameter[0].Value");
@@ -132,11 +134,13 @@ public class SubscriptionController {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Status.CurMachSpeed");
         return machineSpeedCurrentSub.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/machineSpeedCurrentProductsPerMinuteSub")
     public Object getMachineSpeedCurrentProductsPerMinuteSub() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Status.MachSpeed");
         return machineSpeedCurrentProductsPerMinuteSub.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/machineSpeedNextSub")
     public Object getMachineSpeedNextSubValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Command.MachSpeed");
@@ -148,11 +152,13 @@ public class SubscriptionController {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Status.Parameter[1].Value");
         return quantityCurrentSub.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/quantityNextSub")
     public Object getQuantityNextSubValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Command.Parameter[2].Value");
         return quantityNextSub.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/ingredientBarley")
     public Object getIngredientBarleyValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Inventory.Barley");
@@ -164,31 +170,37 @@ public class SubscriptionController {
         NodeId parsedNodeId = new NodeId(6, "::Program:Inventory.Hops");
         return ingredientHops.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/ingredientMalt")
     public Object getIngredientMaltValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Inventory.Malt");
         return ingredientMalt.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/ingredientWheat")
     public Object getIngredientWheatValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Inventory.Wheat");
         return ingredientWheat.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/ingredientYeast")
     public Object getIngredientYeastValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Inventory.Yeast");
         return ingredientYeast.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/maintenanceCounter")
     public Object getMaintenanceCounterValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Maintenance.Counter");
         return maintenanceCounter.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/maintenanceState")
     public Object getMaintenanceStateValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Maintenance.State");
         return maintenanceState.getNodeValue(parsedNodeId);
     }
+
     @GetMapping("/maintenanceTrigger")
     public Object getMaintenanceTriggerValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Maintenance.Trigger");

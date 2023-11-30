@@ -17,6 +17,7 @@ public class MachineStateController {
     public MachineStateController(MachineController machineController) {
         this.machineController = machineController;
     }
+
     @PostMapping("/reset")
     public boolean resetMachine() {
         try {
@@ -26,6 +27,7 @@ public class MachineStateController {
             return false;
         }
     }
+
     @PostMapping("/start")
     public boolean startMachine() {
         try {
@@ -35,6 +37,7 @@ public class MachineStateController {
             return false;
         }
     }
+
     @PostMapping("/stop")
     public boolean stopMachine() {
         try {
@@ -44,6 +47,7 @@ public class MachineStateController {
             return false;
         }
     }
+
     @PostMapping("/abort")
     public boolean abortMachine() {
         try {
@@ -53,6 +57,7 @@ public class MachineStateController {
             return false;
         }
     }
+
     @PostMapping("/clear")
     public boolean clearMachine() {
         try {

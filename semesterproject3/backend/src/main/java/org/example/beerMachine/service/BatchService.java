@@ -40,10 +40,10 @@ public class BatchService {
     public void updateBatch(Long batchId, Integer recipe, Integer quantity) {
         Batch batch = batchRepository.findById(batchId).orElseThrow(() -> new IllegalStateException(
                 "No batch found with id: " + batchId));
-        if(recipe != null && !Objects.equals(batch.getRecipe(), recipe)){
+        if (recipe != null && !Objects.equals(batch.getRecipe(), recipe)) {
             batch.setRecipe(recipe);
         }
-        if(quantity != null && !Objects.equals(batch.getQuantity(), quantity)){
+        if (quantity != null && !Objects.equals(batch.getQuantity(), quantity)) {
             batch.setQuantity(quantity);
         }
     }
@@ -56,7 +56,7 @@ public class BatchService {
         if (latestBatchOptional.isPresent()) {
             // If a latest batch exists, update its values
             Batch latestBatch = latestBatchOptional.get();
-            if(!Objects.equals(latestBatch.getStatus(), status)){
+            if (!Objects.equals(latestBatch.getStatus(), status)) {
                 latestBatch.setStatus(status);
             }
             // Save the updated batch entity
@@ -72,6 +72,7 @@ public class BatchService {
         Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
         return latestBatchOptional.map(Batch::getStatus).orElse(null);
     }
+
     // Fetch the id of the latest batch
     public Long getLatestBatchId() {
         Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();

@@ -28,15 +28,15 @@ public class MachineSpeedNextSub {
 
     final OpcUaClient client;
     private final Map<NodeId, Object> nodeValues;
+
     public MachineSpeedNextSub() {
-        this.client = BeerClientSingleton.getInstance() ;
+        this.client = BeerClientSingleton.getInstance();
         this.nodeValues = new ConcurrentHashMap<>();
     }
 
     @PostConstruct
     public void createSubscription() {
-        try
-        {
+        try {
             // Adapted from OPC UA files from the course Industrial cyber-physical systems
             /* Node endpoints */
             NodeId[] nodeIdsToMonitor = {
@@ -76,7 +76,7 @@ public class MachineSpeedNextSub {
 
 
             // setting the consumer after the subscription creation
-            UaSubscription.ItemCreationCallback onItemCreated =  (item, id) -> item.setValueConsumer(this::onSubscriptionValue);
+            UaSubscription.ItemCreationCallback onItemCreated = (item, id) -> item.setValueConsumer(this::onSubscriptionValue);
 
 
             List<UaMonitoredItem> items = subscription.createMonitoredItems(TimestampsToReturn.Both, monitoredItemCreateRequests, onItemCreated).get();
@@ -84,14 +84,12 @@ public class MachineSpeedNextSub {
             for (UaMonitoredItem item : items) {
                 if (item.getStatusCode().isGood()) {
                     System.out.println("item created for nodeId = " + item.getReadValueId().getNodeId());
-                } else{
+                } else {
                     System.out.println("failed to create item for nodeId = " + item.getReadValueId().getNodeId() + " (status=" + item.getStatusCode() + ")");
                 }
             }
 
-        }
-        catch(Throwable ex)
-        {
+        } catch (Throwable ex) {
             ex.printStackTrace();
         }
 

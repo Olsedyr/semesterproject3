@@ -55,9 +55,7 @@ public class Batch {
     }
 
 
-
-
-    public Batch(float recipe, float quantity, float ingredientBarleyStart, float ingredientHopsStart, float ingredientMaltStart, float ingredientWheatStart, float ingredientYeastStart, float ingredientBarleyStop, float ingredientHopsStop, float ingredientMaltStop, float ingredientWheatStop, float ingredientYeastStop ) {
+    public Batch(float recipe, float quantity, float ingredientBarleyStart, float ingredientHopsStart, float ingredientMaltStart, float ingredientWheatStart, float ingredientYeastStart, float ingredientBarleyStop, float ingredientHopsStop, float ingredientMaltStop, float ingredientWheatStop, float ingredientYeastStop) {
         this.recipe = recipe;
         this.quantity = quantity;
 
@@ -83,204 +81,204 @@ public class Batch {
         return id;
     }
 
-    public float getRecipe() {
-        return recipe;
-    }
-
-    public float getQuantity() {
-        return quantity;
-    }
-
-    public float getMachineSpeedActualProductsPerMinute() {
-        return machineSpeedActualProductsPerMinute;
-    }
-
-    public float getMachineSpeedActualNormalized() {
-        return machineSpeedActualNormalized;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalDateTime getFinishTime() {
-        return finishTime;
-    }
-
-    public int getAcceptableProducts() {
-        return acceptableProducts;
-    }
-
-    public int getDefectProducts() {
-        return defectProducts;
-    }
-
-    public float getTemperatureLowest() {
-        return temperatureLowest;
-    }
-
-    public float getTemperatureHighest() {
-        return temperatureHighest;
-    }
-
-    public float getHumidityLowest() {
-        return humidityLowest;
-    }
-
-    public float getHumidityHighest() {
-        return humidityHighest;
-    }
-
-    public float getVibrationLowest() {
-        return vibrationLowest;
-    }
-
-    public float getVibrationHighest() {
-        return vibrationHighest;
-    }
-
-    public float getIngredientBarleyStart() {
-        return ingredientBarleyStart;
-    }
-
-    public float getIngredientBarleyStop() {
-        return ingredientBarleyStop;
-    }
-
-    public float getIngredientHopsStart() {
-        return ingredientHopsStart;
-    }
-
-    public float getIngredientHopsStop() {
-        return ingredientHopsStop;
-    }
-
-    public float getIngredientMaltStart() {
-        return ingredientMaltStart;
-    }
-
-    public float getIngredientMaltStop() {
-        return ingredientMaltStop;
-    }
-
-    public float getIngredientWheatStart() {
-        return ingredientWheatStart;
-    }
-
-    public float getIngredientWheatStop() {
-        return ingredientWheatStop;
-    }
-
-    public float getIngredientYeastStart() {
-        return ingredientYeastStart;
-    }
-
-    public float getIngredientYeastStop() {
-        return ingredientYeastStop;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public float getRecipe() {
+        return recipe;
     }
 
     public void setRecipe(float recipe) {
         this.recipe = recipe;
     }
 
+    public float getQuantity() {
+        return quantity;
+    }
+
     public void setQuantity(float quantity) {
         this.quantity = quantity;
+    }
+
+    public float getMachineSpeedActualProductsPerMinute() {
+        return machineSpeedActualProductsPerMinute;
     }
 
     public void setMachineSpeedActualProductsPerMinute(float machineSpeedActual) {
         this.machineSpeedActualProductsPerMinute = machineSpeedActual;
     }
 
+    public float getMachineSpeedActualNormalized() {
+        return machineSpeedActualNormalized;
+    }
+
     public void setMachineSpeedActualNormalized(float machineSpeedActualNormalized) {
         this.machineSpeedActualNormalized = machineSpeedActualNormalized;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
+    public LocalDateTime getFinishTime() {
+        return finishTime;
+    }
+
     public void setFinishTime(LocalDateTime finishTime) {
         this.finishTime = finishTime;
+    }
+
+    public int getAcceptableProducts() {
+        return acceptableProducts;
     }
 
     public void setAcceptableProducts(int acceptableProducts) {
         this.acceptableProducts = acceptableProducts;
     }
 
+    public int getDefectProducts() {
+        return defectProducts;
+    }
+
     public void setDefectProducts(int defectProducts) {
         this.defectProducts = defectProducts;
+    }
+
+    public float getTemperatureLowest() {
+        return temperatureLowest;
     }
 
     public void setTemperatureLowest(float temperatureLowest) {
         this.temperatureLowest = temperatureLowest;
     }
 
+    public float getTemperatureHighest() {
+        return temperatureHighest;
+    }
+
     public void setTemperatureHighest(float temperatureHighest) {
         this.temperatureHighest = temperatureHighest;
+    }
+
+    public float getHumidityLowest() {
+        return humidityLowest;
     }
 
     public void setHumidityLowest(float humidityLowest) {
         this.humidityLowest = humidityLowest;
     }
 
+    public float getHumidityHighest() {
+        return humidityHighest;
+    }
+
     public void setHumidityHighest(float humidityHighest) {
         this.humidityHighest = humidityHighest;
+    }
+
+    public float getVibrationLowest() {
+        return vibrationLowest;
     }
 
     public void setVibrationLowest(float vibrationLowest) {
         this.vibrationLowest = vibrationLowest;
     }
 
+    public float getVibrationHighest() {
+        return vibrationHighest;
+    }
+
     public void setVibrationHighest(float vibrationHighest) {
         this.vibrationHighest = vibrationHighest;
+    }
+
+    public float getIngredientBarleyStart() {
+        return ingredientBarleyStart;
     }
 
     public void setIngredientBarleyStart(float ingredientBarleyStart) {
         this.ingredientBarleyStart = ingredientBarleyStart;
     }
 
+    public float getIngredientBarleyStop() {
+        return ingredientBarleyStop;
+    }
+
     public void setIngredientBarleyStop(float ingredientBarleyStop) {
         this.ingredientBarleyStop = ingredientBarleyStop;
+    }
+
+    public float getIngredientHopsStart() {
+        return ingredientHopsStart;
     }
 
     public void setIngredientHopsStart(float ingredientHopsStart) {
         this.ingredientHopsStart = ingredientHopsStart;
     }
 
+    public float getIngredientHopsStop() {
+        return ingredientHopsStop;
+    }
+
     public void setIngredientHopsStop(float ingredientHopsStop) {
         this.ingredientHopsStop = ingredientHopsStop;
+    }
+
+    public float getIngredientMaltStart() {
+        return ingredientMaltStart;
     }
 
     public void setIngredientMaltStart(float ingredientMaltStart) {
         this.ingredientMaltStart = ingredientMaltStart;
     }
 
+    public float getIngredientMaltStop() {
+        return ingredientMaltStop;
+    }
+
     public void setIngredientMaltStop(float ingredientMaltStop) {
         this.ingredientMaltStop = ingredientMaltStop;
+    }
+
+    public float getIngredientWheatStart() {
+        return ingredientWheatStart;
     }
 
     public void setIngredientWheatStart(float ingredientWheatStart) {
         this.ingredientWheatStart = ingredientWheatStart;
     }
 
+    public float getIngredientWheatStop() {
+        return ingredientWheatStop;
+    }
+
     public void setIngredientWheatStop(float ingredientWheatStop) {
         this.ingredientWheatStop = ingredientWheatStop;
+    }
+
+    public float getIngredientYeastStart() {
+        return ingredientYeastStart;
     }
 
     public void setIngredientYeastStart(float ingredientYeastStart) {
         this.ingredientYeastStart = ingredientYeastStart;
     }
 
+    public float getIngredientYeastStop() {
+        return ingredientYeastStop;
+    }
+
     public void setIngredientYeastStop(float ingredientYeastStop) {
         this.ingredientYeastStop = ingredientYeastStop;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public void setStatus(String status) {
