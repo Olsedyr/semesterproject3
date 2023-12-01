@@ -24,12 +24,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
-public class ProductsAcceptableSub {
+public class ProductsProcessedSub {
 
     final OpcUaClient client;
     private final Map<NodeId, Object> nodeValues;
 
-    public ProductsAcceptableSub() {
+    public ProductsProcessedSub() {
         this.client = BeerClientSingleton.getInstance();
         this.nodeValues = new ConcurrentHashMap<>();
     }

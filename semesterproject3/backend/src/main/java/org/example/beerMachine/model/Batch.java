@@ -31,6 +31,7 @@ public class Batch {
     private float machineSpeedActualNormalized;
     private LocalDateTime startTime;
     private LocalDateTime finishTime;
+    private int processedProductsTotal;
     private int acceptableProducts;
     private int defectProducts;
     private float temperatureLowest;
@@ -105,8 +106,8 @@ public class Batch {
         return machineSpeedActualProductsPerMinute;
     }
 
-    public void setMachineSpeedActualProductsPerMinute(float machineSpeedActual) {
-        this.machineSpeedActualProductsPerMinute = machineSpeedActual;
+    public void setMachineSpeedActualProductsPerMinute(float machineSpeedActualProductsPerMinute) {
+        this.machineSpeedActualProductsPerMinute = machineSpeedActualProductsPerMinute;
     }
 
     public float getMachineSpeedActualNormalized() {
@@ -131,6 +132,14 @@ public class Batch {
 
     public void setFinishTime(LocalDateTime finishTime) {
         this.finishTime = finishTime;
+    }
+
+    public int getProcessedProductsTotal() {
+        return processedProductsTotal;
+    }
+
+    public void setProcessedProductsTotal(int processedProductsTotal) {
+        this.processedProductsTotal = processedProductsTotal;
     }
 
     public int getAcceptableProducts() {

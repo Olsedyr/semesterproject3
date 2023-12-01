@@ -11,7 +11,6 @@ const OpcUaValuesDisplay = () => {
   const [sensorTemperatureValue, setSensorTemperatureValue] = useState(null);
   const [sensorVibrationValue, setSensorVibrationValue] = useState(null);
   const [batchIdCurrentValue, setBatchIdCurrentValue] = useState(null);
-  const [batchIdNextValue, setBatchIdNextValue] = useState(null);
   const [machineSpeedCurrentValue, setMachineSpeedCurrentValue] = useState(null);
   const [machineSpeedCurrentProductsPerMinute, setMachineSpeedCurrentProductsPerMinute] = useState(null);
   const [machineSpeedNextValue, setMachineSpeedNextValue] = useState(null);
@@ -39,7 +38,7 @@ const OpcUaValuesDisplay = () => {
     };
 
     const endpoints = [
-      { url: 'http://localhost:8080/opcua/productsAcceptableSub', setValue: setProducedNodeValue },
+      { url: 'http://localhost:8080/opcua/productsProcessedSub', setValue: setProducedNodeValue },
       { url: 'http://localhost:8080/opcua/productsDefectiveSub', setValue: setDefectNodeValue },
       { url: 'http://localhost:8080/opcua/stateCurrentSub', setValue: setStateCurrentValue },
       { url: 'http://localhost:8080/opcua/recipeCurrentSub', setValue: setRecipeCurrentValue },
@@ -48,7 +47,6 @@ const OpcUaValuesDisplay = () => {
       { url: 'http://localhost:8080/opcua/sensorTemperatureSub', setValue: setSensorTemperatureValue },
       { url: 'http://localhost:8080/opcua/sensorVibrationSub', setValue: setSensorVibrationValue },
       { url: 'http://localhost:8080/api/batch/latestBatchId', setValue: setBatchIdCurrentValue }, // not a subscription value, but the latest batch id from the database
-      { url: 'http://localhost:8080/opcua/batchIdNextSub', setValue: setBatchIdNextValue },
       { url: 'http://localhost:8080/opcua/machineSpeedCurrentSub', setValue: setMachineSpeedCurrentValue },
       { url: 'http://localhost:8080/opcua/machineSpeedCurrentProductsPerMinuteSub', setValue: setMachineSpeedCurrentProductsPerMinute },
       { url: 'http://localhost:8080/opcua/machineSpeedNextSub', setValue: setMachineSpeedNextValue },
@@ -195,13 +193,13 @@ const OpcUaValuesDisplay = () => {
     <div>
       <h2>OPC UA Node Values</h2>
       <div>
-        <p>Produced Node Value: {producedNodeValue !== null ? producedNodeValue : 'Loading...'}</p>
+        <p>Total Processed Node Value: {producedNodeValue !== null ? producedNodeValue : 'Loading...'}</p>
+        <p>Acceptable Node Value: {producedNodeValue - defectNodeValue !== null ? producedNodeValue - defectNodeValue  : 'Loading...'}</p>
         <p>Defect Node Value: {defectNodeValue !== null ? defectNodeValue : 'Loading...'}</p>
         <p>State Current Value: {stateCurrentValue !== null ? stateCurrentValue : 'Loading...'}</p>
         <p>Recipe Current Value: {recipeCurrentValue !== null ? recipeCurrentValue : 'Loading...'}</p>
         <p>Recipe Next Value: {recipeNextValue !== null ? recipeNextValue : 'Loading...'}</p>
         <p>Batch ID Current Value: {batchIdCurrentValue !== null ? batchIdCurrentValue : 'null'}</p>
-        <p>Batch ID Next Value: {batchIdNextValue !== null ? batchIdNextValue : 'Loading...'}</p>
         <p>Machine Speed Current Normalized Value (0-100): {machineSpeedCurrentValue !== null ? machineSpeedCurrentValue : 'Loading...'}</p>
         <p>Machine Speed Current (Products Per Minute): {machineSpeedCurrentProductsPerMinute !== null ? machineSpeedCurrentProductsPerMinute : 'Loading...'}</p>
         <p>Machine Speed Next Value (Products Per Minute): {machineSpeedNextValue !== null ? machineSpeedNextValue : 'Loading...'}</p>

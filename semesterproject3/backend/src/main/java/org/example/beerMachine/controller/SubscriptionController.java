@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 public class SubscriptionController {
 
-    private final ProductsAcceptableSub productsAcceptableSub;
+    private final ProductsProcessedSub productsProcessedSub;
     private final ProductsDefectiveSub productsDefectiveSub;
     private final StateCurrentSub stateCurrentSub;
     private final RecipeCurrentSub recipeCurrentSub;
@@ -33,7 +33,7 @@ public class SubscriptionController {
     private final MaintenanceState maintenanceState;
     private final MaintenanceTrigger maintenanceTrigger;
 
-    public SubscriptionController(ProductsAcceptableSub productsAcceptableSub, ProductsDefectiveSub productsDefectiveSub,
+    public SubscriptionController(ProductsProcessedSub productsProcessedSub, ProductsDefectiveSub productsDefectiveSub,
                                   StateCurrentSub stateCurrentSub, RecipeCurrentSub recipeCurrentSub, RecipeNextSub recipeNextSub,
                                   SensorHumiditySub sensorHumiditySub, SensorTemperatureSub sensorTemperatureSub,
                                   SensorVibrationSub sensorVibrationSub, BatchIdCurrentSub batchIdCurrentSub,
@@ -44,7 +44,7 @@ public class SubscriptionController {
                                   IngredientMalt ingredientMalt, IngredientWheat ingredientWheat, IngredientYeast ingredientYeast,
                                   MaintenanceCounter maintenanceCounter, MaintenanceState maintenanceState,
                                   MaintenanceTrigger maintenanceTrigger) {
-        this.productsAcceptableSub = productsAcceptableSub;
+        this.productsProcessedSub = productsProcessedSub;
         this.productsDefectiveSub = productsDefectiveSub;
         this.stateCurrentSub = stateCurrentSub;
         this.recipeCurrentSub = recipeCurrentSub;
@@ -69,10 +69,10 @@ public class SubscriptionController {
         this.maintenanceTrigger = maintenanceTrigger;
     }
 
-    @GetMapping("/productsAcceptableSub") //::Program:Cube.Admin.ProdProcessedCount
-    public Object getProductsAcceptableSubValue() {
+    @GetMapping("/productsProcessedSub") //::Program:Cube.Admin.ProdProcessedCount
+    public Object getProductsProcessedSubValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Admin.ProdProcessedCount");
-        return productsAcceptableSub.getNodeValue(parsedNodeId);
+        return productsProcessedSub.getNodeValue(parsedNodeId);
     }
 
     @GetMapping("/productsDefectiveSub")

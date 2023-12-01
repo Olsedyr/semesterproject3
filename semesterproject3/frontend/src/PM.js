@@ -99,7 +99,7 @@ const Login = () => {
 
         const endpoints = [
             { url: 'http://localhost:8080/opcua/productsDefectiveSub', setValue: setDefectNodeValue },
-            { url: 'http://localhost:8080/opcua/productsAcceptableSub', setValue: setProducedNodeValue },
+            { url: 'http://localhost:8080/opcua/productsProcessedSub', setValue: setProducedNodeValue },
             { url: 'http://localhost:8080/opcua/stateCurrentSub', setValue: setStateCurrentValue },
             { url: 'http://localhost:8080/opcua/recipeCurrentSub', setValue: setRecipeCurrentValue },
             { url: 'http://localhost:8080/opcua/sensorHumiditySub', setValue: setSensorHumidityValue },
@@ -325,7 +325,7 @@ const Login = () => {
 
                         <p><strong>Products pr. Minute:</strong> {}</p>
 
-                        <p><strong>Acceptable Product:</strong> {}</p>
+                        <p><strong>Acceptable Product:</strong> {producedNodeValue - defectNodeValue !== null ? producedNodeValue - defectNodeValue  : 'Loading...'}</p>
 
                         <p><strong>Defects:</strong> {defectNodeValue !== null ? defectNodeValue : 'Loading...'} units ({((defectNodeValue / producedNodeValue) * 100).toFixed(2)}%)</p>
 

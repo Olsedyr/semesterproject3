@@ -14,7 +14,7 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:3000")
 public class SubscriptionToDatabaseController {
 
-    private final ProductsAcceptableSub productsAcceptableSub;
+    private final ProductsProcessedSub productsProcessedSub;
     private final ProductsDefectiveSub productsDefectiveSub;
     private final StateCurrentSub stateCurrentSub;
     private final RecipeCurrentSub recipeCurrentSub;
@@ -40,7 +40,7 @@ public class SubscriptionToDatabaseController {
 
     private final BatchRepository batchRepository;
 
-    public SubscriptionToDatabaseController(ProductsAcceptableSub productsAcceptableSub, ProductsDefectiveSub productsDefectiveSub,
+    public SubscriptionToDatabaseController(ProductsProcessedSub productsProcessedSub, ProductsDefectiveSub productsDefectiveSub,
                                             StateCurrentSub stateCurrentSub, RecipeCurrentSub recipeCurrentSub, RecipeNextSub recipeNextSub,
                                             SensorHumiditySub sensorHumiditySub, SensorTemperatureSub sensorTemperatureSub,
                                             SensorVibrationSub sensorVibrationSub, BatchIdCurrentSub batchIdCurrentSub,
@@ -51,7 +51,7 @@ public class SubscriptionToDatabaseController {
                                             IngredientMalt ingredientMalt, IngredientWheat ingredientWheat, IngredientYeast ingredientYeast,
                                             MaintenanceCounter maintenanceCounter, MaintenanceState maintenanceState,
                                             MaintenanceTrigger maintenanceTrigger, BatchRepository batchRepository) {
-        this.productsAcceptableSub = productsAcceptableSub;
+        this.productsProcessedSub = productsProcessedSub;
         this.productsDefectiveSub = productsDefectiveSub;
         this.stateCurrentSub = stateCurrentSub;
         this.recipeCurrentSub = recipeCurrentSub;
@@ -80,8 +80,9 @@ public class SubscriptionToDatabaseController {
     @PostMapping("/saveBatch")
     public void saveBatchValues() {
         // Fetch values from OPC UA nodes
-        int acceptableProducts = convertToInt(getProductsAcceptableSubValue());
+        int processedProducts = convertToInt(getProductsProcessedSubValue());
         int defectProducts = convertToInt(getProductsDefectiveSubValue());
+        int acceptableProducts = processedProducts-defectProducts;
         float humiditySubValue = convertToFloat(getSensorHumiditySubValue());
         float temperatureSubValue = convertToFloat(getSensorTemperatureSubValue());
         float vibrationSubValue = convertToFloat(getSensorVibrationSubValue());
@@ -100,8 +101,9 @@ public class SubscriptionToDatabaseController {
         if (latestBatchOptional.isPresent()) {
             Batch latestBatch = latestBatchOptional.get();
             if (latestBatch.getStatus().equals("started")) {
-                latestBatch.setAcceptableProducts(acceptableProducts);
+                latestBatch.setProcessedProductsTotal(acceptableProducts);
                 latestBatch.setDefectProducts(defectProducts);
+                latestBatch.setAcceptableProducts(acceptableProducts);
                 latestBatch.setIngredientBarleyStop(ingredientBarley);
                 latestBatch.setIngredientHopsStop(ingredientHops);
                 latestBatch.setIngredientMaltStop(ingredientMalt);
@@ -151,7 +153,7 @@ public class SubscriptionToDatabaseController {
 
             // If the batch is completed, set it to "completed" in the database
             if (currentStatus == 17 && latestBatch.getStatus().equals("started")
-                    && latestBatch.getAcceptableProducts() + latestBatch.getDefectProducts() == latestBatch.getQuantity()) {
+                    && latestBatch.getProcessedProductsTotal() == latestBatch.getQuantity()) {
                 latestBatch.setStatus("completed");
                 latestBatch.setFinishTime(LocalDateTime.now());
             }
@@ -180,9 +182,9 @@ public class SubscriptionToDatabaseController {
         }
     }
 
-    private Object getProductsAcceptableSubValue() {
+    private Object getProductsProcessedSubValue() {
         NodeId parsedNodeId = new NodeId(6, "::Program:Cube.Admin.ProdProcessedCount");
-        return productsAcceptableSub.getNodeValue(parsedNodeId);
+        return productsProcessedSub.getNodeValue(parsedNodeId);
     }
 
     private Object getProductsDefectiveSubValue() {
