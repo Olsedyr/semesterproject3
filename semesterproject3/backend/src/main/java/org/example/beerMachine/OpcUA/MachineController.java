@@ -138,29 +138,47 @@ public class MachineController {
         return (float) readNodeValue(nodeId);
     }
 
-    public void writeRecipeValue(int value) throws UaException, ExecutionException, InterruptedException {
+    public boolean writeRecipeValue(int value) throws UaException, ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.Parameter[1].Value");
         writeValueToNode(nodeId, value);
+        boolean success = false;
         StatusCode statusCode = writeValueToNode(nodeId, value);
         if (statusCode.isGood()) {
             System.out.println("Recipe set to " + value);
+            success = true;
         }
+        return success;
     }
 
-    public void writeQuantityValue(int value) throws UaException, ExecutionException, InterruptedException {
+    public boolean writeQuantityValue(int value) throws UaException, ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.Parameter[2].Value");
+        if (value < 1) {
+            value = 1;
+        }
+        if (value > 999_999_999) {
+            value = 999_999_999;
+        }
         StatusCode statusCode = writeValueToNode(nodeId, value);
+        boolean success = false;
         if (statusCode.isGood()) {
             System.out.println("Quantity set to " + value);
+            success = true;
         }
+        return success;
     }
 
-    public void writeMachineSpeedValue(int value) throws UaException, ExecutionException, InterruptedException {
+    public boolean writeMachineSpeedValue(int value) throws UaException, ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.MachSpeed");
+        if (value < 0) {
+            value = 0;
+        }
         StatusCode statusCode = writeValueToNode(nodeId, value);
+        boolean success = false;
         if (statusCode.isGood()) {
             System.out.println("Machine speed set to " + value);
+            success = true;
         }
+        return success;
     }
 
     public void writeBatchIdValueNext(int value) throws UaException, ExecutionException, InterruptedException {
@@ -202,10 +220,10 @@ public class MachineController {
     }
 
 
-    public Boolean startMachine() throws ExecutionException, InterruptedException {
+    public boolean startMachine() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
         final int value = 2;
-        Boolean started = false;
+        boolean started = false;
         int state = readStateCurrent();
         if (state == 4) { // State must be idle
             // set the batchId (needs database value)
@@ -240,10 +258,10 @@ public class MachineController {
         return started;
     }
 
-    public Boolean resetMachine() throws ExecutionException, InterruptedException {
+    public boolean resetMachine() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
         final int value = 1;
-        Boolean reset = false;
+        boolean reset = false;
         int state = readStateCurrent();
         if (state == 17 || state == 2) { // state must be complete or stopped
             StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();
@@ -261,10 +279,10 @@ public class MachineController {
         return reset;
     }
 
-    public Boolean stopMachine() throws ExecutionException, InterruptedException {
+    public boolean stopMachine() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
         final int value = 3;
-        Boolean stopped = false;
+        boolean stopped = false;
         int state = readStateCurrent();
         if (state != 2 && state != 9 && state != 8 && state != 1) { // state must not be aborted, aborting, clearing or stopped
             StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();
@@ -282,10 +300,10 @@ public class MachineController {
         return stopped;
     }
 
-    public Boolean abortMachine() throws ExecutionException, InterruptedException {
+    public boolean abortMachine() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
         final int value = 4;
-        Boolean aborted = false;
+        boolean aborted = false;
         int state = readStateCurrent();
         if (state != 9) { // state must not be aborted
             StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();
@@ -303,10 +321,10 @@ public class MachineController {
         return aborted;
     }
 
-    public Boolean clearMachine() throws ExecutionException, InterruptedException {
+    public boolean clearMachine() throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
         final int value = 5;
-        Boolean cleared = false;
+        boolean cleared = false;
         int state = readStateCurrent();
         if (state == 9) { // state must be aborted
             StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();

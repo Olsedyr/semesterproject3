@@ -23,9 +23,9 @@ public class Main {
 
         // Config batch
         //*
-        machineController.writeQuantityValue(7);
-        machineController.writeMachineSpeedValue(20);
-        machineController.writeRecipeValue(1);
+        machineController.writeQuantityValue(100);
+        machineController.writeMachineSpeedValue(300);
+        machineController.writeRecipeValue(0);
         //*/
 
 

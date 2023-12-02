@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 const OpcUaValuesDisplay = () => {
@@ -24,6 +24,10 @@ const OpcUaValuesDisplay = () => {
   const [maintenanceCounter, setMaintenanceCounter] = useState(null);
   const [maintenanceState, setMaintenanceState] = useState(null);
   const [maintenanceTrigger, setMaintenanceTrigger] = useState(null);
+  const machineSpeedInputRef = useRef(null);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+
+  const [quantity, setQuantity] = useState(null);
 
 
 
@@ -36,6 +40,7 @@ const OpcUaValuesDisplay = () => {
         console.error('Error fetching node value:', error);
       }
     };
+
 
     const endpoints = [
       { url: 'http://localhost:8080/opcua/productsProcessedSub', setValue: setProducedNodeValue },
@@ -62,7 +67,7 @@ const OpcUaValuesDisplay = () => {
       { url: 'http://localhost:8080/opcua/maintenanceTrigger', setValue: setMaintenanceTrigger },
     ];
 
-  
+
 
     endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
     const intervalId = setInterval(() => {
@@ -101,6 +106,17 @@ const OpcUaValuesDisplay = () => {
 
         // Adding a batch to the database, but only if the machine started successfully
         const batchResponse = await axios.post('http://localhost:8080/api/batch', batchPayload);
+
+        // Reset speed, recipe and quantity for next batch
+        setSelectedRecipe(""); // Reset selected recipe
+        machineSpeedInputRef.current.value = null; // Reset machine speed input field
+        setQuantity(null); // Reset quantity
+        // Update the value attribute of the quantity input field
+        const quantityInput = document.getElementById('quantity');
+        if (quantityInput) {
+          quantityInput.value = ''; // Reset quantity input field
+        }
+
         console.log('Batch added:', batchResponse.data); // Process the response data as needed
       } else {
         console.log('Machine did not start, check the machine state.');
@@ -146,8 +162,8 @@ const OpcUaValuesDisplay = () => {
     }
   };
 
-  // Update Database with subscription values every 10 seconds
-  const upDateDatabase = () => {
+  // Update Database with subscription values
+  const updateDatabase = () => {
     fetch('http://localhost:8080/opcua/saveBatch', {
       method: 'POST',
       headers: {
@@ -163,7 +179,7 @@ const OpcUaValuesDisplay = () => {
         // Handle errors if the request fails
         console.error('Error saving batch:', error);
       });
-  
+
     fetch('http://localhost:8080/opcua/saveBatchStatusFinished', {
       method: 'POST',
       headers: {
@@ -181,20 +197,124 @@ const OpcUaValuesDisplay = () => {
       });
   };
 
-  // Call the function every 10th seconds
-  setInterval(upDateDatabase, 10000);
+  setInterval(updateDatabase, 10000);
 
+
+  const handleSpeedChange = async (event) => {
+    const newSpeed = machineSpeedInputRef.current.value;
+    try {
+      // Make a POST request to change the speed value
+      const response = await axios.post(`http://localhost:8080/api/machine/writeMachineSpeedValue/${newSpeed}`);
+      console.log('Speed of next batch changed successfully:', response.data);
+      // Handle the response or update state if needed
+    } catch (error) {
+      console.error('Error changing speed:', error);
+      // Handle errors
+    }
+  };
+
+
+  const handleRecipeChange = async (event) => {
+    const selectedRecipe = event.target.value;
+    setSelectedRecipe(selectedRecipe);
+    try {
+      // Make a POST request to change the recipe value
+      const response = await axios.post(`http://localhost:8080/api/machine/writeRecipeValue/${selectedRecipe}`);
+      console.log('Recipe changed successfully:', response.data);
+      // Handle the response or update state if needed
+    } catch (error) {
+      console.error('Error changing recipe:', error);
+      // Handle errors
+    }
+  };
+
+  const handleQuantityChange = async (event) => {
+    const value = parseInt(event.target.value, 10) || 0;
+
+    // Update the quantity state
+    setQuantity(value);
+
+    try {
+      // Make a POST request to change the quantity value
+      const response = await axios.post(`http://localhost:8080/api/machine/writeQuantityValue/${value}`);
+      console.log('Quantity of next batch changed successfully:', response.data);
+      // Handle the response or update state if needed
+    } catch (error) {
+      console.error('Error changing quantity:', error);
+      // Handle errors
+    }
+  };
 
 
 
 
 
   return (
+
     <div>
+      <div className="dashboard">
+
+        {/* Production Speed */}
+        <div className="info-box">
+          <h2>Production Speed</h2>
+          <div className="box-content">
+
+            {/* Speed Selector */}
+            <div className="speed-selector">
+              <label htmlFor="speedSelector">Select Speed:</label>
+              <input
+                type="number"
+                id="speedSelector"
+                ref={machineSpeedInputRef}
+                min="0"
+                max="600"
+                onChange={handleSpeedChange}
+              />
+            </div>
+          </div>
+        </div>
+
+
+
+
+        {/* Quantity */}
+        <div className="info-box">
+          <h2>Quantity</h2>
+          <div className="quantity-box">
+            <input
+              type="number"
+              id="quantity"
+              value={quantity}
+              onChange={handleQuantityChange}
+            />
+          </div>
+        </div>
+
+        {/* Recipe */}
+        <div className="info-box">
+          <h2>Recipe</h2>
+          <div className="box-content" id="recipeBox">
+            <select id="beerRecipe" className="recipe-dropdown" value={selectedRecipe} onChange={handleRecipeChange}>
+              <option value="">Select Recipe</option> {/* Default option */}
+              <option value="0">Pilsner</option> {/* Value corresponds to OPC UA recipe IDs */}
+              <option value="1">Wheat</option>
+              <option value="2">IPA</option>
+              <option value="3">Stout</option>
+              <option value="4">Ale</option>
+              <option value="5">Alcohol Free</option>
+            </select>
+          </div>
+        </div>
+
+
+
+      </div>
+
+
       <h2>OPC UA Node Values</h2>
       <div>
         <p>Total Processed Node Value: {producedNodeValue !== null ? producedNodeValue : 'Loading...'}</p>
-        <p>Acceptable Node Value: {producedNodeValue - defectNodeValue !== null ? producedNodeValue - defectNodeValue  : 'Loading...'}</p>
+        <p>Acceptable Node Value: {producedNodeValue - defectNodeValue !== null ? producedNodeValue - defectNodeValue : 'Loading...'}</p>
         <p>Defect Node Value: {defectNodeValue !== null ? defectNodeValue : 'Loading...'}</p>
         <p>State Current Value: {stateCurrentValue !== null ? stateCurrentValue : 'Loading...'}</p>
         <p>Recipe Current Value: {recipeCurrentValue !== null ? recipeCurrentValue : 'Loading...'}</p>
