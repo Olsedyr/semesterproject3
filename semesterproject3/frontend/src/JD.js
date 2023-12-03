@@ -22,6 +22,8 @@ const Login = () => {
     const [currentProductionSpeed, setCurrentProductionSpeed] = useState(0);
 
 
+    const [selectedOption, setSelectedOption] = useState(null);
+
     // State for sensor data
     const [sensorData, setSensorData] = useState({
         temperature: 0.0,
@@ -149,6 +151,18 @@ const Login = () => {
         defects: 5,
     };
 
+
+
+
+    const handleRadioChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
+
+    // Function to handle send request button click
+    const handleSendRequest = () => {
+        // Add logic to send the request based on the selected option
+        console.log(`Sending request with selected option: ${selectedOption}`);
+    };
 
 
 
@@ -325,12 +339,55 @@ const Login = () => {
                         <p><strong>OEE:</strong> {oee.toFixed(2)}%</p>
                     </div>
                 </div>
+            </div>
 
+            {/* Info-box with Radio Buttons and Send Request Button */}
+            <div className="info-box">
+                <h2>Request Options</h2>
+                <div className="box-content">
+                    <form>
+                        <div>
+                            <input
+                                type="radio"
+                                id="option1"
+                                value="option1"
+                                checked={selectedOption === 'option1'}
+                                onChange={handleRadioChange}
+                            />
+                            <label htmlFor="option1">Stop Machine</label>
+                        </div>
+                        <div>
+                            <input
+                                type="radio"
+                                id="option2"
+                                value="option2"
+                                checked={selectedOption === 'option2'}
+                                onChange={handleRadioChange}
+                            />
+                            <label htmlFor="option2">Start Machine</label>
+                        </div>
+                        <div>
+                            <input
+                                type="radio"
+                                id="option3"
+                                value="option3"
+                                checked={selectedOption === 'option3'}
+                                onChange={handleRadioChange}
+                            />
+                            <label htmlFor="option3">Start Maintenance</label>
+                        </div>
 
+                        <button className="button request-button" onClick={handleSendRequest}>Send Request</button>
+                    </form>
+                </div>
             </div>
 
 
-            <div className="controls">
+
+
+
+
+    <div className="controls">
                 <button className="button" onClick={saveProductionDataAsPDF}>Save Production Data</button>
             </div>
         </div>
