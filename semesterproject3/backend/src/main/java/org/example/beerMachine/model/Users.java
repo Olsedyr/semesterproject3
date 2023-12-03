@@ -27,16 +27,16 @@ public class Users {
     private String username;
     private String password;
 
-    public Users(){
+    public Users() {
     }
 
-    public Users(Long id, String username, String password){
+    public Users(Long id, String username, String password) {
         this.id = id;
         this.username = username;
         this.password = password;
     }
 
-    public Users(String username, String password){
+    public Users(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -53,6 +53,7 @@ public class Users {
     public void setId(Long id) {
         this.id = id;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }

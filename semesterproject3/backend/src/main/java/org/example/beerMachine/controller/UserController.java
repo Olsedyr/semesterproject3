@@ -8,12 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Date;
 
-
 @RestController
-@RequestMapping(path="api/Users")
+@RequestMapping(path = "api/Users")
 @CrossOrigin(origins = "http://localhost:3000") // Allow requests from frontend
 public class UserController {
 

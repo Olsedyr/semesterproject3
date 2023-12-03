@@ -1,4 +1,5 @@
-package org.example.beerMachine.OpcUA.subscriptions;
+package org.example.beerMachine.service.subscriptionServices;
+
 import jakarta.annotation.PostConstruct;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
@@ -15,6 +16,7 @@ import org.eclipse.milo.opcua.stack.core.types.structured.MonitoringParameters;
 import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
 import org.example.beerMachine.OpcUA.BeerClientSingleton;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,23 +24,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
-public class ProductsDefectiveSub {
+public class RecipeNextSub {
 
     final OpcUaClient client;
     private final Map<NodeId, Object> nodeValues;
-    public ProductsDefectiveSub() {
-        this.client = BeerClientSingleton.getInstance() ;
+
+    public RecipeNextSub() {
+        this.client = BeerClientSingleton.getInstance();
         this.nodeValues = new ConcurrentHashMap<>();
     }
 
     @PostConstruct
     public void createSubscription() {
-        try
-        {
+        try {
             // Adapted from OPC UA files from the course Industrial cyber-physical systems
             /* Node endpoints */
             NodeId[] nodeIdsToMonitor = {
-                    new NodeId(6, "::Program:Cube.Admin.ProdDefectiveCount")
+                    new NodeId(6, "::Program:Cube.Command.Parameter[1].Value")
             };
 
             List<MonitoredItemCreateRequest> monitoredItemCreateRequests = new ArrayList<>();
@@ -74,7 +76,7 @@ public class ProductsDefectiveSub {
 
 
             // setting the consumer after the subscription creation
-            UaSubscription.ItemCreationCallback onItemCreated =  (item, id) -> item.setValueConsumer(this::onSubscriptionValue);
+            UaSubscription.ItemCreationCallback onItemCreated = (item, id) -> item.setValueConsumer(this::onSubscriptionValue);
 
 
             List<UaMonitoredItem> items = subscription.createMonitoredItems(TimestampsToReturn.Both, monitoredItemCreateRequests, onItemCreated).get();
@@ -82,14 +84,12 @@ public class ProductsDefectiveSub {
             for (UaMonitoredItem item : items) {
                 if (item.getStatusCode().isGood()) {
                     System.out.println("item created for nodeId = " + item.getReadValueId().getNodeId());
-                } else{
+                } else {
                     System.out.println("failed to create item for nodeId = " + item.getReadValueId().getNodeId() + " (status=" + item.getStatusCode() + ")");
                 }
             }
 
-        }
-        catch(Throwable ex)
-        {
+        } catch (Throwable ex) {
             ex.printStackTrace();
         }
 
@@ -102,7 +102,6 @@ public class ProductsDefectiveSub {
 
         //System.out.println("Received value for Node " + nodeId + ": " + newValue);
 
-        // Store the received value in nodeValues map
         nodeValues.put(nodeId, newValue);
     }
 
