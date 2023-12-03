@@ -6,7 +6,7 @@ import axios from "axios";
 const Login = () => {
     const [quantity, setQuantity] = useState(0);
     const [maintenanceProgress, setMaintenanceProgress] = useState(36);
-    const [selectedRecipe, setSelectedRecipe] = useState('Pilsner');
+    const [selectedRecipe, setSelectedRecipe] = useState(null);
     const [batchID, setBatchID] = useState(null);
     const [batchStatus, setBatchStatus] = useState("Not In Progress");
     const [oee, setOEE] = useState(0);
@@ -28,13 +28,24 @@ const Login = () => {
     const [batchIdCurrentValue, setBatchIdCurrentValue] = useState(null);
     const [machineSpeedCurrentValue, setMachineSpeedCurrentValue] = useState(null);
     const machineSpeedInputRef = useRef(null);
+    const [maintenanceCounter, setMaintenanceCounter] = useState(null);
+
+
 
 
     const [quantityCurrentValue, setQuantityCurrentValue] = useState(null);
 
-    const handleSpeedChange = () => {
+    const handleSpeedChange = async (event) => {
         const newSpeed = machineSpeedInputRef.current.value;
-        setMachineSpeedCurrentValue(newSpeed);
+        try {
+            // Make a POST request to change the speed value
+            const response = await axios.post(`http://localhost:8080/api/machine/writeMachineSpeedValue/${newSpeed}`);
+            console.log('Speed of next batch changed successfully:', response.data);
+            // Handle the response or update state if needed
+        } catch (error) {
+            console.error('Error changing speed:', error);
+            // Handle errors
+        }
     };
 
     const handleStartProduction = () => {
@@ -79,9 +90,26 @@ const Login = () => {
     }));
 
     const calculateOEE = () => {
+        // Availability
+        const availability = stateCurrentValue === "Operating" ? 1 : 0;
+
+        // Performance
+        const idealProductionRate = quantityCurrentValue;
+        const actualProductionRate = producedNodeValue;
+        const performance = actualProductionRate / idealProductionRate;
+
+        // Quality
+        const goodUnits = producedNodeValue - defectNodeValue;
+        const quality = goodUnits / producedNodeValue;
+
+        // Calculate OEE
         const calculatedOEE = availability * performance * quality * 100;
         setOEE(calculatedOEE);
     };
+
+    useEffect(() => {
+        calculateOEE();
+    }, [stateCurrentValue, quantityCurrentValue, producedNodeValue, defectNodeValue]);
 
     useEffect(() => {
         calculateOEE();
@@ -133,6 +161,9 @@ const Login = () => {
         };
     }, []);
 
+
+
+
     const saveProductionDataAsPDF = () => {
         console.log('Button clicked!');
         // Create a new instance of jsPDF
@@ -181,11 +212,13 @@ const Login = () => {
                                 type="number"
                                 id="speedSelector"
                                 ref={machineSpeedInputRef}
-                                value={machineSpeedCurrentValue === null ? '' : machineSpeedCurrentValue}
-                                min="1"
-                                max="10"
+                                min="0"
+                                max="600"
                                 onChange={handleSpeedChange}
                             />
+                        </div>
+                        <div className="Current Speed">
+                            <p>Current Machine Speed: {machineSpeedCurrentValue}</p>
                         </div>
                     </div>
                 </div>
@@ -219,10 +252,13 @@ const Login = () => {
                     <h2>Recipe</h2>
                     <div className="box-content" id="recipeBox">
                         <select id="beerRecipe" className="recipe-dropdown" value={selectedRecipe} onChange={handleRecipeChange}>
-                            <option value="Pilsner">Pilsner</option>
-                            <option value="Classic">Classic</option>
-                            <option value="IPA">IPA</option>
-                            <option value="Stout">Stout</option>
+                            <option value="">Select Recipe</option> {/* Default option */}
+                            <option value="0">Pilsner</option> {/* Value corresponds to OPC UA recipe IDs */}
+                            <option value="1">Wheat</option>
+                            <option value="2">IPA</option>
+                            <option value="3">Stout</option>
+                            <option value="4">Ale</option>
+                            <option value="5">Alcohol Free</option>
                         </select>
                     </div>
                 </div>

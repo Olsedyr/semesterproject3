@@ -154,11 +154,11 @@ body::before {
 
 .maintenance-progress {
     height: 100%;
-    width: 36%; /* percentage of maintenance */
     background-color: #420000;
     border-radius: 5px;
     transition: width 0.3s ease-in-out;
 }
+
 
 
 
