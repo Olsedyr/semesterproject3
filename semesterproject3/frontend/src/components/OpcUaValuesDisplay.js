@@ -126,16 +126,20 @@ const OpcUaValuesDisplay = () => {
     }
   };
 
+
   const handleStopProduction = async () => {
     try {
-      // Starting the machine
+      // Stopping the machine
       const machineResponse = await axios.post('http://localhost:8080/api/machine/stop');
       const machineStopped = machineResponse.data;
-
+  
       if (machineStopped) {
-        // Change the status of the latest batch to stopped
-        const batchResponse = await axios.put('http://localhost:8080/api/batch/updateStatus?status=stopped');
-        console.log('Batch Stopped:', batchResponse.data);
+        const batchStopResponse = await axios.put('http://localhost:8080/api/batch/updateStatus?status=stopped');
+        console.log('Batch Stopped:', batchStopResponse.data);
+  
+        // Update the finish time of the batch using the updateFinishTime endpoint
+        const finishTimeResponse = await axios.put('http://localhost:8080/api/batch/updateFinishTime');
+        console.log('Finish Time Updated:', finishTimeResponse.data);
       } else {
         console.log('Machine did not stop, check the machine state.');
       }
@@ -146,14 +150,17 @@ const OpcUaValuesDisplay = () => {
 
   const handleAbortProduction = async () => {
     try {
-      // Starting the machine
+      // Aborting the machine
       const machineResponse = await axios.post('http://localhost:8080/api/machine/abort');
-      const machineStopped = machineResponse.data;
-
-      if (machineStopped) {
-        // Change the status of the latest batch to stopped
-        const batchResponse = await axios.put('http://localhost:8080/api/batch/updateStatus?status=aborted');
-        console.log('Batch Stopped:', batchResponse.data);
+      const machineAborted = machineResponse.data;
+  
+      if (machineAborted) {
+        const batchAbortResponse = await axios.put('http://localhost:8080/api/batch/updateStatus?status=aborted');
+        console.log('Batch aborted:', batchAbortResponse.data);
+  
+        // Update the finish time of the batch using the updateFinishTime endpoint
+        const finishTimeResponse = await axios.put('http://localhost:8080/api/batch/updateFinishTime');
+        console.log('Finish Time Updated:', finishTimeResponse.data);
       } else {
         console.log('Machine did not abort, check the machine state.');
       }

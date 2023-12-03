@@ -166,6 +166,7 @@ public class SubscriptionToDatabaseController {
         }
     }
 
+
     private int convertToInt(Object value) {
         if (value instanceof Number) {
             return ((Number) value).intValue();

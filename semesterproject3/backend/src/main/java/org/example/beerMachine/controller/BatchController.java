@@ -5,6 +5,8 @@ import org.example.beerMachine.model.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -46,6 +48,11 @@ public class BatchController {
     public void updateBatchStatus(
             @RequestParam String status) {
         batchService.updateBatchStatus(status);
+    }
+
+    @PutMapping(path = "updateFinishTime")
+    public void updateBatchFinishTime() {
+        batchService.updateFinishTime();
     }
 
     // Endpoint to retrieve the status of the latest batch

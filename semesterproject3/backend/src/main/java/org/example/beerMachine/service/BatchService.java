@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,6 +59,26 @@ public class BatchService {
             Batch latestBatch = latestBatchOptional.get();
             if (!Objects.equals(latestBatch.getStatus(), status)) {
                 latestBatch.setStatus(status);
+            }
+            // Save the updated batch entity
+            batchRepository.save(latestBatch);
+        } else {
+            // If no batch exists, do nothing or handle as needed
+            System.out.println("No existing batch found. Values not updated.");
+        }
+    }
+
+    @Transactional
+    public void updateFinishTime() {
+        // Find the latest batch in the database
+        Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
+
+        if (latestBatchOptional.isPresent()) {
+            // If a latest batch exists, update its values
+            Batch latestBatch = latestBatchOptional.get();
+
+            if (Objects.equals(latestBatch.getFinishTime(), null)) {
+                latestBatch.setFinishTime(LocalDateTime.now());
             }
             // Save the updated batch entity
             batchRepository.save(latestBatch);
