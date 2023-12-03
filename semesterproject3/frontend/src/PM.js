@@ -60,9 +60,18 @@ const Login = () => {
         setBatchIdCurrentValue(newBatchID);
     };
 
-    const handleRecipeChange = (event) => {
+    const handleRecipeChange = async (event) => {
         const selectedRecipe = event.target.value;
         setSelectedRecipe(selectedRecipe);
+        try {
+            // Make a POST request to change the recipe value
+            const response = await axios.post(`http://localhost:8080/api/machine/writeRecipeValue/${selectedRecipe}`);
+            console.log('Recipe changed successfully:', response.data);
+            // Handle the response or update state if needed
+        } catch (error) {
+            console.error('Error changing recipe:', error);
+            // Handle errors
+        }
     };
 
     const handleQuantityChange = (event) => {
@@ -353,7 +362,7 @@ const Login = () => {
 
                         <p><strong>Production Start Time:</strong> {productionStartTime}</p>
 
-                        <p><strong>Recipe:</strong> {recipeCurrentValue !== null ? recipeCurrentValue : 'Loading...'}</p>
+                        <p><strong>Recipe:</strong> {selectedRecipe}</p>
 
                         <p><strong>Quantity Produced:</strong> {producedNodeValue !== null ? producedNodeValue : 'Loading...'} units</p>
 
