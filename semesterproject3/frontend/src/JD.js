@@ -166,7 +166,7 @@ const Login = () => {
                 return;
             }
 
-            await axios.post('http://localhost:8080/api/requests/save', { selectedOption }, { withCredentials: true, timeout: 5000 });
+            await axios.post('http://localhost:8080/api/Request/save', { selectedOption }, { withCredentials: true, timeout: 5000 });
 
             console.log('Request sent successfully');
         } catch (error) {

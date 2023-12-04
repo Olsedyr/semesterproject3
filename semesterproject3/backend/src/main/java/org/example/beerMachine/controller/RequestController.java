@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping(path = "/api/requests")
