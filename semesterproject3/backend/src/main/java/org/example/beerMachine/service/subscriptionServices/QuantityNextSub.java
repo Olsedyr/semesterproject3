@@ -1,4 +1,4 @@
-package org.example.beerMachine.OpcUA.subscriptions;
+package org.example.beerMachine.service.subscriptionServices;
 
 import jakarta.annotation.PostConstruct;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
@@ -24,23 +24,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
-public class SensorVibrationSub {
+public class QuantityNextSub {
 
     final OpcUaClient client;
     private final Map<NodeId, Object> nodeValues;
-    public SensorVibrationSub() {
-        this.client = BeerClientSingleton.getInstance() ;
+
+    public QuantityNextSub() {
+        this.client = BeerClientSingleton.getInstance();
         this.nodeValues = new ConcurrentHashMap<>();
     }
 
     @PostConstruct
     public void createSubscription() {
-        try
-        {
+        try {
             // Adapted from OPC UA files from the course Industrial cyber-physical systems
             /* Node endpoints */
             NodeId[] nodeIdsToMonitor = {
-                    new NodeId(6, "::Program:Cube.Status.Parameter[4].Value")
+                    new NodeId(6, "::Program:Cube.Command.Parameter[2].Value")
             };
 
             List<MonitoredItemCreateRequest> monitoredItemCreateRequests = new ArrayList<>();
@@ -76,7 +76,7 @@ public class SensorVibrationSub {
 
 
             // setting the consumer after the subscription creation
-            UaSubscription.ItemCreationCallback onItemCreated =  (item, id) -> item.setValueConsumer(this::onSubscriptionValue);
+            UaSubscription.ItemCreationCallback onItemCreated = (item, id) -> item.setValueConsumer(this::onSubscriptionValue);
 
 
             List<UaMonitoredItem> items = subscription.createMonitoredItems(TimestampsToReturn.Both, monitoredItemCreateRequests, onItemCreated).get();
@@ -84,14 +84,12 @@ public class SensorVibrationSub {
             for (UaMonitoredItem item : items) {
                 if (item.getStatusCode().isGood()) {
                     System.out.println("item created for nodeId = " + item.getReadValueId().getNodeId());
-                } else{
+                } else {
                     System.out.println("failed to create item for nodeId = " + item.getReadValueId().getNodeId() + " (status=" + item.getStatusCode() + ")");
                 }
             }
 
-        }
-        catch(Throwable ex)
-        {
+        } catch (Throwable ex) {
             ex.printStackTrace();
         }
 
