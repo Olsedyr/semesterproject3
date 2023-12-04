@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
 import axios from "axios";
+import './PMstyles.css';
 
 const Login = () => {
     const [quantity, setQuantity] = useState(0);
@@ -378,6 +379,8 @@ const Login = () => {
                     </div>
                 </div>
 
+
+
                 {/* OEE */}
                 <div className="info-box">
                     <h2>Overall Equipment Effectiveness (OEE)</h2>
@@ -387,6 +390,21 @@ const Login = () => {
                 </div>
 
             </div>
+
+
+            {/* Message Request */}
+            <div className="info-box">
+                <h2>Machine Request: </h2>
+                <div className="box-content">
+                    {/* Message Box */}
+                    <div className="message-box">
+                        {/* Render messages here */}
+                        <p className="message">This is a sample message</p>
+                        {/* Add more messages as needed */}
+                    </div>
+                </div>
+            </div>
+
 
 
             <div className="controls">

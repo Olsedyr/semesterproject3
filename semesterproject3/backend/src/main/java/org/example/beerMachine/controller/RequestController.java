@@ -1,0 +1,26 @@
+package org.example.beerMachine.controller;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.example.beerMachine.model.Request;
+import org.example.beerMachine.repository.RequestRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+import java.util.Date;
+
+@RestController
+@RequestMapping(path = "api/Request")
+@CrossOrigin(origins = "http://localhost:3000") // Allow requests from frontend
+public class RequestController {
+
+    private final RequestRepository requestRepository;
+
+
+    @Autowired
+    public RequestController(RequestRepository requestRepository) {
+        this.requestRepository = requestRepository;
+    }
+
+}

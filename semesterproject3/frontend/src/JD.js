@@ -1,9 +1,9 @@
 // PM.js
-
 import React, { useState, useEffect } from 'react';
 import './JDstyles.css';
 import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
+import axios from "axios";
 
 const Login = () => {
     // State for quantity and maintenance progress
@@ -159,12 +159,20 @@ const Login = () => {
     };
 
     // Function to handle send request button click
-    const handleSendRequest = () => {
-        // Add logic to send the request based on the selected option
-        console.log(`Sending request with selected option: ${selectedOption}`);
+    const handleSendRequest = async () => {
+        try {
+            if (!selectedOption) {
+                alert('Please select an option before sending a request.');
+                return;
+            }
+
+            await axios.post('http://localhost:8080/api/requests/save', selectedOption, { withCredentials: true });
+
+            console.log('Request sent successfully');
+        } catch (error) {
+            console.error('Error sending request:', error);
+        }
     };
-
-
 
 
 
@@ -376,7 +384,6 @@ const Login = () => {
                             />
                             <label htmlFor="option3">Start Maintenance</label>
                         </div>
-
                         <button className="button request-button" onClick={handleSendRequest}>Send Request</button>
                     </form>
                 </div>
