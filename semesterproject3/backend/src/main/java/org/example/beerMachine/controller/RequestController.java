@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
 @RestController
-@RequestMapping(path = "api/Request")
+@RequestMapping(path = "/api/requests")
 @CrossOrigin(origins = "http://localhost:3000") // Allow requests from frontend
 public class RequestController {
 
@@ -21,6 +21,19 @@ public class RequestController {
     @Autowired
     public RequestController(RequestRepository requestRepository) {
         this.requestRepository = requestRepository;
+    }
+
+
+    @PostMapping("/save")
+    public ResponseEntity<String> saveRequest(@RequestBody Request request) {
+        System.out.println("Received request: " + request);
+        requestRepository.save(request);
+        return ResponseEntity.ok("Request saved successfully");
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
     }
 
 }

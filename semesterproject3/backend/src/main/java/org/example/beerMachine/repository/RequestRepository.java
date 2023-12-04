@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface RequestRepository extends JpaRepository<Request,String> {
+public interface RequestRepository extends JpaRepository<Request, Long> {
     @Query("SELECT b FROM Request b WHERE b.id = ?1")
     Optional<Request> FindRequestBYid(String id);
 }
