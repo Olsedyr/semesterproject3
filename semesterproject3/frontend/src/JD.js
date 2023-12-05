@@ -1,9 +1,9 @@
 // PM.js
-
 import React, { useState, useEffect } from 'react';
 import './JDstyles.css';
 import Chart from 'chart.js/auto';
 import jsPDF from 'jspdf';
+import axios from "axios";
 
 const Login = () => {
     // State for quantity and maintenance progress
@@ -21,6 +21,8 @@ const Login = () => {
 
     const [currentProductionSpeed, setCurrentProductionSpeed] = useState(0);
 
+
+    const [selectedOption, setSelectedOption] = useState(null);
 
     // State for sensor data
     const [sensorData, setSensorData] = useState({
@@ -151,6 +153,26 @@ const Login = () => {
 
 
 
+
+    const handleRadioChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
+
+    // Function to handle send request button click
+    const handleSendRequest = async () => {
+        try {
+            if (!selectedOption) {
+                alert('Please select an option before sending a request.');
+                return;
+            }
+
+            await axios.post('http://localhost:8080/api/Request/save', { selectedOption }, { withCredentials: true, timeout: 5000 });
+
+            console.log('Request sent successfully');
+        } catch (error) {
+            console.error('Error sending request:', error);
+        }
+    };
 
 
 
@@ -325,12 +347,54 @@ const Login = () => {
                         <p><strong>OEE:</strong> {oee.toFixed(2)}%</p>
                     </div>
                 </div>
+            </div>
 
-
+            {/* Info-box with Radio Buttons and Send Request Button */}
+            <div className="info-box">
+                <h2>Request Options</h2>
+                <div className="box-content">
+                    <form>
+                        <div>
+                            <input
+                                type="radio"
+                                id="option1"
+                                value="option1"
+                                checked={selectedOption === 'option1'}
+                                onChange={handleRadioChange}
+                            />
+                            <label htmlFor="option1">Stop Machine</label>
+                        </div>
+                        <div>
+                            <input
+                                type="radio"
+                                id="option2"
+                                value="option2"
+                                checked={selectedOption === 'option2'}
+                                onChange={handleRadioChange}
+                            />
+                            <label htmlFor="option2">Start Machine</label>
+                        </div>
+                        <div>
+                            <input
+                                type="radio"
+                                id="option3"
+                                value="option3"
+                                checked={selectedOption === 'option3'}
+                                onChange={handleRadioChange}
+                            />
+                            <label htmlFor="option3">Start Maintenance</label>
+                        </div>
+                        <button className="button request-button" onClick={handleSendRequest}>Send Request</button>
+                    </form>
+                </div>
             </div>
 
 
-            <div className="controls">
+
+
+
+
+    <div className="controls">
                 <button className="button" onClick={saveProductionDataAsPDF}>Save Production Data</button>
             </div>
         </div>

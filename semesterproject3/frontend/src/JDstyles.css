@@ -44,6 +44,10 @@ body::before {
 }
 
 
+
+
+
+
 .ingredients-box {
     width: 100%;
 }
@@ -62,6 +66,17 @@ body::before {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: visible;
 }
+
+.request-options-box {
+    width: 48%; /* Adjust the width as needed */
+    margin-bottom: 20px;
+    margin-left: 4%; /* Adjust the margin to leave space between boxes */
+    background-color: #fff;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: visible;
+}
+
 
 .quantity-box {
     display: flex;

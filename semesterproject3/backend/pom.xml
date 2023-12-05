@@ -111,6 +111,13 @@
             <version>0.11.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version> <!-- Adjust version if needed -->
+        </dependency>
+
+
 
 
     </dependencies>
