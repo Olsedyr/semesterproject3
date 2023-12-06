@@ -1,8 +1,8 @@
 package org.example.beerMachine.repository;
 
 import org.example.beerMachine.model.Request;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 

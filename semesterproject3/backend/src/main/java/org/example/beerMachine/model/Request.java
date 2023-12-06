@@ -3,7 +3,7 @@ package org.example.beerMachine.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table
+@Table(name = "request")
 public class Request {
 
     @Id
@@ -18,18 +18,30 @@ public class Request {
     )
     private Long id;
 
+    @Column(name = "selected_option")
     private String selectedOption;
 
     public Request() {
         // Default constructor needed for JPA
     }
 
-    public Request(Long id, String selectedOption) {
-        this.id = id;
-        this.selectedOption = selectedOption;
+    // Getters and setters...
+
+    public Long getId() {
+        return id;
     }
 
-    // Getters and setters...
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getSelectedOption() {
+        return selectedOption;
+    }
+
+    public void setSelectedOption(String selectedOption) {
+        this.selectedOption = selectedOption;
+    }
 
     @Override
     public String toString() {

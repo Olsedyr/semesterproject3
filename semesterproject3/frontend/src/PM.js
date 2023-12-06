@@ -41,7 +41,7 @@ const PM = () => {
                 <OEE />
 
                 {/* Message Request */}
-                <MessageRequest />
+                <MessageRequest/>
 
                 {/* Next Batch */}
                 <NextBatchConfig />
