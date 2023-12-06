@@ -8,7 +8,7 @@ import ControlButtons from './components/ControlButtons';
 import OEE from './components/OEE';
 import TemperatureOverTime from './components/TemperatureOverTime';
 import NextBatchConfig from './components/NextBatchConfig';
-//import MessageRequest from './components/MessageRequest';
+import MessageRequest from './components/MessageRequest';
 
 
 const PM = () => {
@@ -41,7 +41,7 @@ const PM = () => {
                 <OEE />
 
                 {/* Message Request */}
-
+                <MessageRequest/>
 
                 {/* Next Batch */}
                 <NextBatchConfig />
