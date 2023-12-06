@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.Date;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 
 @RestController
@@ -34,6 +36,12 @@ public class RequestController {
 
         requestRepository.save(request);
         return ResponseEntity.ok("Request saved successfully");
+    }
+
+    @DeleteMapping("/clear")
+    public ResponseEntity<String> clearRequest() {
+        requestRepository.deleteAll();
+        return ResponseEntity.ok("Request successfully deleted");
     }
 
     @GetMapping("/all")
