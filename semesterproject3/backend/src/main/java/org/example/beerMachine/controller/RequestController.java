@@ -27,7 +27,11 @@ public class RequestController {
 
     @PostMapping("/save")
     public ResponseEntity<String> saveRequest(@RequestBody Request request) {
-        System.out.println("Received request: " + request);
+        String selectedOption = request.getSelectedOption();
+        System.out.println("Received request with selected option: " + selectedOption);
+
+        // Use the selectedOption as needed
+
         requestRepository.save(request);
         return ResponseEntity.ok("Request saved successfully");
     }

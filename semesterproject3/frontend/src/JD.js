@@ -160,14 +160,17 @@ const Login = () => {
     };
 
     // Function to handle send request button click
-    const handleSendRequest = async () => {
+    const handleSendRequest = async (e) => {
+        e.preventDefault()
         try {
             if (!selectedOption) {
                 alert('Please select an option before sending a request.');
                 return;
             }
 
-            await axios.post('http://localhost:8080/api/requests/save', { selectedOption }, {timeout: 5000 });
+            console.log('Request payload:', { selectedOption }); // Log the payload
+
+            await axios.post('http://localhost:8080/api/requests/save', { selectedOption }, { timeout: 5000 });
 
             console.log('Request sent successfully');
         } catch (error) {
