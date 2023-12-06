@@ -22,7 +22,7 @@ const Login = () => {
     const [currentProductionSpeed, setCurrentProductionSpeed] = useState(0);
 
 
-    const [selectedOption, setSelectedOption] = useState('option1');
+    const [selectedOption, setSelectedOption] = useState('Start Machine');
 
     // State for sensor data
     const [sensorData, setSensorData] = useState({
@@ -362,8 +362,8 @@ const Login = () => {
                             <input
                                 type="radio"
                                 id="option1"
-                                value="option1"
-                                checked={selectedOption === 'option1'}
+                                value="Start Machine"
+                                checked={selectedOption === 'Start Machine'}
                                 onChange={handleRadioChange}
                             />
                             <label htmlFor="option1">Stop Machine</label>
@@ -372,8 +372,8 @@ const Login = () => {
                             <input
                                 type="radio"
                                 id="option2"
-                                value="option2"
-                                checked={selectedOption === 'option2'}
+                                value="Stop Machine"
+                                checked={selectedOption === 'Stop Machine'}
                                 onChange={handleRadioChange}
                             />
                             <label htmlFor="option2">Start Machine</label>
@@ -382,8 +382,8 @@ const Login = () => {
                             <input
                                 type="radio"
                                 id="option3"
-                                value="option3"
-                                checked={selectedOption === 'option3'}
+                                value="Start Maintenance"
+                                checked={selectedOption === 'Start Maintenance'}
                                 onChange={handleRadioChange}
                             />
                             <label htmlFor="option3">Start Maintenance</label>
