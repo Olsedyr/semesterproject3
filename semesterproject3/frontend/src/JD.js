@@ -22,7 +22,7 @@ const Login = () => {
     const [currentProductionSpeed, setCurrentProductionSpeed] = useState(0);
 
 
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption, setSelectedOption] = useState('option1');
 
     // State for sensor data
     const [sensorData, setSensorData] = useState({
@@ -155,6 +155,7 @@ const Login = () => {
 
 
     const handleRadioChange = (event) => {
+        console.log('Selected Option:', event.target.value);
         setSelectedOption(event.target.value);
     };
 
@@ -166,7 +167,7 @@ const Login = () => {
                 return;
             }
 
-            await axios.post('http://localhost:8080/api/requests/save', { selectedOption }, { withCredentials: true, timeout: 5000 });
+            await axios.post('http://localhost:8080/api/requests/save', { selectedOption }, {timeout: 5000 });
 
             console.log('Request sent successfully');
         } catch (error) {
