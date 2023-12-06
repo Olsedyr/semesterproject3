@@ -17,18 +17,9 @@ public class SaveBatchScheduler {
     private final ProductsProcessedSub productsProcessedSub;
     private final ProductsDefectiveSub productsDefectiveSub;
     private final StateCurrentSub stateCurrentSub;
-    private final RecipeCurrentSub recipeCurrentSub;
-    private final RecipeNextSub recipeNextSub;
     private final SensorHumiditySub sensorHumiditySub;
     private final SensorTemperatureSub sensorTemperatureSub;
     private final SensorVibrationSub sensorVibrationSub;
-    private final BatchIdCurrentSub batchIdCurrentSub;
-    private final BatchIdNextSub batchIdNextSub;
-    private final MachineSpeedCurrentSub machineSpeedCurrentSub;
-    private final MachineSpeedCurrentProductsPerMinuteSub machineSpeedCurrentProductsPerMinuteSub;
-    private final MachineSpeedNextSub machineSpeedNextSub;
-    private final QuantityCurrentSub quantityCurrentSub;
-    private final QuantityNextSub quantityNextSub;
     private final IngredientBarley ingredientBarley;
     private final IngredientHops ingredientHops;
     private final IngredientMalt ingredientMalt;
@@ -40,22 +31,18 @@ public class SaveBatchScheduler {
 
     private final BatchRepository batchRepository;
 
-    public SaveBatchScheduler(ProductsProcessedSub productsProcessedSub, ProductsDefectiveSub productsDefectiveSub, StateCurrentSub stateCurrentSub, RecipeCurrentSub recipeCurrentSub, RecipeNextSub recipeNextSub, SensorHumiditySub sensorHumiditySub, SensorTemperatureSub sensorTemperatureSub, SensorVibrationSub sensorVibrationSub, BatchIdCurrentSub batchIdCurrentSub, BatchIdNextSub batchIdNextSub, MachineSpeedCurrentSub machineSpeedCurrentSub, MachineSpeedCurrentProductsPerMinuteSub machineSpeedCurrentProductsPerMinuteSub, MachineSpeedNextSub machineSpeedNextSub, QuantityCurrentSub quantityCurrentSub, QuantityNextSub quantityNextSub, IngredientBarley ingredientBarley, IngredientHops ingredientHops, IngredientMalt ingredientMalt, IngredientWheat ingredientWheat, IngredientYeast ingredientYeast, MaintenanceCounter maintenanceCounter, MaintenanceState maintenanceState, MaintenanceTrigger maintenanceTrigger, BatchRepository batchRepository) {
+    public SaveBatchScheduler(ProductsProcessedSub productsProcessedSub, ProductsDefectiveSub productsDefectiveSub,
+                              StateCurrentSub stateCurrentSub, SensorHumiditySub sensorHumiditySub, SensorTemperatureSub sensorTemperatureSub,
+                              SensorVibrationSub sensorVibrationSub, IngredientBarley ingredientBarley,
+                              IngredientHops ingredientHops, IngredientMalt ingredientMalt,
+                              IngredientWheat ingredientWheat, IngredientYeast ingredientYeast, MaintenanceCounter maintenanceCounter,
+                              MaintenanceState maintenanceState, MaintenanceTrigger maintenanceTrigger, BatchRepository batchRepository) {
         this.productsProcessedSub = productsProcessedSub;
         this.productsDefectiveSub = productsDefectiveSub;
         this.stateCurrentSub = stateCurrentSub;
-        this.recipeCurrentSub = recipeCurrentSub;
-        this.recipeNextSub = recipeNextSub;
         this.sensorHumiditySub = sensorHumiditySub;
         this.sensorTemperatureSub = sensorTemperatureSub;
         this.sensorVibrationSub = sensorVibrationSub;
-        this.batchIdCurrentSub = batchIdCurrentSub;
-        this.batchIdNextSub = batchIdNextSub;
-        this.machineSpeedCurrentSub = machineSpeedCurrentSub;
-        this.machineSpeedCurrentProductsPerMinuteSub = machineSpeedCurrentProductsPerMinuteSub;
-        this.machineSpeedNextSub = machineSpeedNextSub;
-        this.quantityCurrentSub = quantityCurrentSub;
-        this.quantityNextSub = quantityNextSub;
         this.ingredientBarley = ingredientBarley;
         this.ingredientHops = ingredientHops;
         this.ingredientMalt = ingredientMalt;
@@ -67,20 +54,8 @@ public class SaveBatchScheduler {
         this.batchRepository = batchRepository;
     }
 
-//    @Scheduled(fixedRate = 1000) // Run every 1 second
-//    public void saveBatchValues() {
-//        // Your logic for saving batch values
-//        // ...
-//    }
-//
-//    @Scheduled(fixedRate = 1000) // Run every 1 second
-//    public void checkAndSaveBatchStatus() {
-//        // Your logic for checking and saving batch status
-//        // ...
-//    }
 
     @Scheduled(fixedRate = 1000) // Run every 1 second
-    @PostMapping("/saveBatch")
     public void saveBatchValues() {
         // Fetch values from OPC UA nodes
         int processedProducts = convertToInt(getProductsProcessedSubValue());
@@ -134,6 +109,7 @@ public class SaveBatchScheduler {
                 }
 
             }
+
             // Save the updated batch entity
             batchRepository.save(latestBatch);
         } else {
@@ -142,7 +118,6 @@ public class SaveBatchScheduler {
         }
     }
     @Scheduled(fixedRate = 1000) // Run every 1 second
-    @PostMapping("/saveBatchStatusFinished")
     public void checkAndSaveBatchStatus() {
         // Fetch values from OPC UA nodes
         int currentStatus = convertToInt(getStateCurrentSubValue());
@@ -174,7 +149,7 @@ public class SaveBatchScheduler {
         if (value instanceof Number) {
             return ((Number) value).intValue();
         } else {
-            return 0; // Change to handle default value or throw an exception
+            return 0;
         }
     }
 
@@ -182,7 +157,7 @@ public class SaveBatchScheduler {
         if (value instanceof Number) {
             return ((Number) value).floatValue();
         } else {
-            return 0.0f; // Change to handle default value or throw an exception
+            return 0.0f;
         }
     }
 
