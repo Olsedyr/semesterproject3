@@ -36,6 +36,11 @@ public class RequestController {
         return ResponseEntity.ok("Request saved successfully");
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Request>> getAllRequests() {
+        List<Request> requests = requestRepository.findAll();
+        return ResponseEntity.ok(requests);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
