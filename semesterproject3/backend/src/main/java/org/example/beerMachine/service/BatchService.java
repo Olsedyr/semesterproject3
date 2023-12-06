@@ -88,6 +88,12 @@ public class BatchService {
         }
     }
 
+    // Fetch the latest batch
+    public Optional<Batch> getLatestBatch() {
+        Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
+        return latestBatchOptional;
+    }
+
     // Fetch the status of the latest batch
     public String getLatestBatchStatus() {
         Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
@@ -99,4 +105,10 @@ public class BatchService {
         Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
         return latestBatchOptional.map(Batch::getId).orElse(null);
     }
+    // Fetch the id of the latest batch
+    public LocalDateTime getLatestBatchStartTime() {
+        Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
+        return latestBatchOptional.map(Batch::getStartTime).orElse(null);
+    }
+
 }

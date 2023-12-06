@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/batch")
@@ -55,6 +56,18 @@ public class BatchController {
         batchService.updateFinishTime();
     }
 
+    // Endpoint to retrieve the latest batch
+    @GetMapping("/latestBatch")
+    public ResponseEntity<Optional<Batch>> getLatestBatch() {
+        Optional<Batch> latestBatch = batchService.getLatestBatch();
+
+        if (latestBatch != null) {
+            return ResponseEntity.ok(latestBatch);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     // Endpoint to retrieve the status of the latest batch
     @GetMapping("/latestStatus")
     public ResponseEntity<String> getLatestBatchStatus() {
@@ -78,6 +91,18 @@ public class BatchController {
             return ResponseEntity.notFound().build();
         }
     }
+    // Endpoint to retrieve the Start Time of the latest batch
+    @GetMapping("/latestBatchStartTime")
+    public ResponseEntity<LocalDateTime> getLatestBatchStartTime() {
+        LocalDateTime latestBatchStatus = batchService.getLatestBatchStartTime();
+
+        if (latestBatchStatus != null) {
+            return ResponseEntity.ok(latestBatchStatus);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 
 }
