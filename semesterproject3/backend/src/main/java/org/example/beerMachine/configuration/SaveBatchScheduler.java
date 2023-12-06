@@ -2,7 +2,9 @@ package org.example.beerMachine.configuration;
 
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.example.beerMachine.model.Batch;
+import org.example.beerMachine.model.SensorData;
 import org.example.beerMachine.repository.BatchRepository;
+import org.example.beerMachine.repository.SensorDataRepository;
 import org.example.beerMachine.service.subscriptionServices.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,13 +32,16 @@ public class SaveBatchScheduler {
     private final MaintenanceTrigger maintenanceTrigger;
 
     private final BatchRepository batchRepository;
+    private final SensorDataRepository sensorDataRepository;
 
     public SaveBatchScheduler(ProductsProcessedSub productsProcessedSub, ProductsDefectiveSub productsDefectiveSub,
                               StateCurrentSub stateCurrentSub, SensorHumiditySub sensorHumiditySub, SensorTemperatureSub sensorTemperatureSub,
                               SensorVibrationSub sensorVibrationSub, IngredientBarley ingredientBarley,
                               IngredientHops ingredientHops, IngredientMalt ingredientMalt,
                               IngredientWheat ingredientWheat, IngredientYeast ingredientYeast, MaintenanceCounter maintenanceCounter,
-                              MaintenanceState maintenanceState, MaintenanceTrigger maintenanceTrigger, BatchRepository batchRepository) {
+                              MaintenanceState maintenanceState, MaintenanceTrigger maintenanceTrigger,
+                              BatchRepository batchRepository, SensorDataRepository sensorDataRepository
+    ) {
         this.productsProcessedSub = productsProcessedSub;
         this.productsDefectiveSub = productsDefectiveSub;
         this.stateCurrentSub = stateCurrentSub;
@@ -52,8 +57,31 @@ public class SaveBatchScheduler {
         this.maintenanceState = maintenanceState;
         this.maintenanceTrigger = maintenanceTrigger;
         this.batchRepository = batchRepository;
+        this.sensorDataRepository = sensorDataRepository;
     }
+    @Scheduled(fixedRate = 5000) // Run every 5 second
+    public void saveSensorData() {
+        // Fetch values from OPC UA nodes
+        float humiditySubValue = convertToFloat(getSensorHumiditySubValue());
+        float temperatureSubValue = convertToFloat(getSensorTemperatureSubValue());
+        float vibrationSubValue = convertToFloat(getSensorVibrationSubValue());
 
+        // Find the latest batch in the database
+        Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
+
+        if (latestBatchOptional.isPresent()) {
+            Batch latestBatch = latestBatchOptional.get();
+            if (latestBatch.getStatus().equals("started")) {
+                SensorData sensorData = new SensorData();
+                sensorData.setBatchId(latestBatchOptional.get().getId());
+                sensorData.setHumidity(humiditySubValue);
+                sensorData.setTemperature(temperatureSubValue);
+                sensorData.setVibration(vibrationSubValue);
+                sensorDataRepository.save(sensorData);
+            }
+        }
+
+    }
 
     @Scheduled(fixedRate = 1000) // Run every 1 second
     public void saveBatchValues() {
