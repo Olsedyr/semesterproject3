@@ -9,6 +9,7 @@ import OEE from './components/OEE';
 import TemperatureOverTime from './components/TemperatureOverTime';
 import NextBatchConfig from './components/NextBatchConfig';
 import RadioButtonRequest from './components/RadioButtonRequest'
+import SaveProductionData from "./components/SaveProductionData";
 
 
 const JD = () => {
@@ -45,9 +46,12 @@ const JD = () => {
 
                 {/* Next Batch */}
                 <NextBatchConfig />
+
+
+                <SaveProductionData/>
+
             </div>
 
-            <ControlButtons />
         </div>
     );
 };
