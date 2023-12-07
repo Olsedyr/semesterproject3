@@ -6,7 +6,7 @@ import PM from './PM';
 import JD from './JD';
 
 
-const Login = () => {
+const Login = ({setAuthenticated}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -19,22 +19,25 @@ const Login = () => {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                    // You can add other headers as needed
                 },
                 timeout: 5000,
             });
 
             if (response && response.data) {
-                // Handle successful login, e.g., store the token in local storage
+                // Succesful login
                 console.log('Login successful', response.data);
+
+                // Sets authentication status after succesful login
+                setAuthenticated(true);
 
                 console.log(localStorage.getItem('token', response.data));
 
                 if (username === "admin") {
-                    navigate('/pm'); //If username is admin
+                    navigate('/pm'); //If username is admin then navigate to pm site
                 } else if (username === "junior"){
-                    navigate('/jd'); //If username is junior
+                    navigate('/jd'); //If username is junior then navigate to jd site
                 }
+
             } else {
                 // Handle unexpected response format
                 console.error('Unexpected response format', response);
@@ -43,8 +46,7 @@ const Login = () => {
         } catch (error) {
             // Handle login error
             if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
+                // Error if login failed
                 console.error('Login failed', error.response.data);
             } else if (error.request) {
                 // The request was made but no response was received
