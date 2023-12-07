@@ -106,6 +106,7 @@ const NextBatchConfig = () => {
         handleRecipeChange(recipeValue);
     };
 
+
     return (
         <div className="info-box">
             <h2>Configure next batch</h2>
