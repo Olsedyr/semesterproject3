@@ -67,33 +67,55 @@ const SaveProductionData = () => {
         return 'Loading...';
     };
 
-
     const saveProductionDataAsPDF = () => {
-        console.log('Button clicked!');
         // Create a new instance of jsPDF
         const pdfDoc = new jsPDF();
+
         // Title
         pdfDoc.setFontSize(20);
         pdfDoc.setTextColor(33, 33, 33); // Set text color to black
-        pdfDoc.text('Batch Information', 20, 20);
+        pdfDoc.text('Batch Information', 70, 20, null, null, 'center');
+
         // Batch Information
-        const batchInfoText = `
-            Batch ID: ${batchIdCurrentValue} 
-            Production Start Time: ${productionStartTime}
-            Recipe: ${recipeCurrentValue} ${getRecipeDescription()}
-            Quantity Produced: ${producedNodeValue} units
-            Amounts To Produce: ${quantityCurrentValue} units
-            Machine speed (Products per Minute): ${machineSpeedCurrentProductsPerMinute}
-            Machine speed (normalized 0-100): ${machineSpeedCurrentValue}
-            Acceptable Product: ${producedNodeValue - defectNodeValue} units
-            Defect products: ${defectNodeValue} units (${((defectNodeValue / producedNodeValue) * 100).toFixed(2)}%)
-        `;
-        // Add batch information
-        pdfDoc.setFontSize(14);
-        pdfDoc.setTextColor(33, 33, 33); // Set text color to black
-        pdfDoc.text(batchInfoText, 20, 30);
+        pdfDoc.setTextColor(33, 33, 33); // Set text color back to black
+        pdfDoc.setFontSize(12);
+
+        const batchInfoText = [
+            `Batch ID: ${batchIdCurrentValue}`,
+            `Production Start Time: ${productionStartTime}`,
+            `Recipe: ${recipeCurrentValue} ${getRecipeDescription()}`,
+            `Quantity Produced: ${producedNodeValue} units`,
+            `Amounts To Produce: ${quantityCurrentValue} units`,
+            `Machine speed (Products per Minute): ${machineSpeedCurrentProductsPerMinute}`,
+            `Machine speed (normalized 0-100): ${machineSpeedCurrentValue}`,
+            `Acceptable Product: ${producedNodeValue - defectNodeValue} units`,
+            `Defect products: ${defectNodeValue} units (${((defectNodeValue / producedNodeValue) * 100).toFixed(2)}%)`
+        ];
+
+        // Calculate the number of columns
+        const numColumns = 2;
+        // Calculate the width of each column
+        const colWidth = pdfDoc.internal.pageSize.width / numColumns;
+        // Calculate the height of each row
+        const rowHeight = pdfDoc.getTextDimensions('Sample').h + 2;
+        // Set vertical and horizontal spacing
+        const verticalSpacing = 10;
+
+        // Add batch information to the grid layout
+        batchInfoText.forEach((info, index) => {
+            const col = index % numColumns;
+            const row = Math.floor(index / numColumns);
+            const x = col * colWidth;
+            const y = 30 + row * (3 * rowHeight + verticalSpacing);
+
+            // Break lines if text is too long
+            const lines = pdfDoc.splitTextToSize(info, colWidth-20);
+            lines.forEach((line, lineIndex) => {
+                pdfDoc.text(line, x + 10, y + lineIndex * rowHeight);
+            });
+        });
+
         // Save the PDF with a specific name
-        // ... (more PDF content)
         pdfDoc.save('ProductionData.pdf');
     };
 
