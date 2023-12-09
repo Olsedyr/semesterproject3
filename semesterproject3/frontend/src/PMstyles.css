@@ -228,3 +228,25 @@ body::before {
 .message {
     margin-bottom: 5px;
 }
+
+/* .table-header {
+    padding-right: 15px;
+}
+
+.table-cell {
+    padding-right: 15px;
+} */
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Merge cell borders */
+    overflow-x: auto; /* Enable horizontal scrolling */
+  }
+  
+  th,
+  td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap; /* Prevent text wrapping */
+  }
