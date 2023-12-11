@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import SaveProductionData from './SaveProductionData';
 
+
 const ControlButtons = () => {
   
 
@@ -32,12 +33,29 @@ const ControlButtons = () => {
         // Adding a batch to the database, but only if the machine started successfully
         const batchResponse = await axios.post('http://localhost:8080/api/batch', batchPayload);
 
-        console.log('Batch added:', batchResponse.data); // Process the response data as needed
+        const queuedBatchFromQueue = await fetchQueuedBatchFromQueue();
+
+        if (queuedBatchFromQueue) {
+          const removeQueuedBatchResponse = await axios.delete('http://localhost:8080/api/batch/removeFromQueue/' + 0);
+          console.log('Queued Batch Removed:', removeQueuedBatchResponse.data);
+
+          await fetchQueuedBatchFromQueue();
+        }
       } else {
         console.log('Machine did not start, check the machine state.');
       }
     } catch (error) {
       console.error('Error starting machine:', error);
+    }
+  };
+
+  const fetchQueuedBatchFromQueue = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/batch/batchQueue");
+      return response.data.length > 0 ? response.data[0] : null;
+    } catch (error) {
+      console.error('Error fetching queued batch from BatchQueue:', error);
+      return null;
     }
   };
 
@@ -55,6 +73,8 @@ const ControlButtons = () => {
         // Update the finish time of the batch using the updateFinishTime endpoint
         const finishTimeResponse = await axios.put('http://localhost:8080/api/batch/updateFinishTime');
         console.log('Finish Time Updated:', finishTimeResponse.data);
+
+        await fetchQueuedBatchFromQueue();
       } else {
         console.log('Machine did not stop, check the machine state.');
       }

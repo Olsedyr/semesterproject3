@@ -228,3 +228,11 @@ body::before {
 .message {
     margin-bottom: 5px;
 }
+
+.batch-item {
+    margin-bottom: 8px; /* Adjust the value as needed */
+}
+
+.batch-item button {
+    margin-left: 15px; /* Adjust the value as needed */
+}

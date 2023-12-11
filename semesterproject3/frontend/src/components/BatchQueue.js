@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useState, useEffect, useRef } from 'react';
-import BatchQueue from './BatchQueue';
 
 // Map of recipe IDs to their names
 const recipeTranslation = {
@@ -12,18 +11,73 @@ const recipeTranslation = {
     6: 'Alcohol Free',
 };
 
-const NextBatchConfig = () => {
+const BatchQueue = () => {
     const machineSpeedInputRef = useRef(null);
     const [selectedRecipe, setSelectedRecipe] = useState(null);
     const [quantity, setQuantity] = useState(null);
+    const [queueQuantity, setQueueQuantity] = useState(null);
     const [machineSpeedActualProductsPerMinute, setSpeed] = useState(null);
-
 
     const [machineSpeedNextValue, setMachineSpeedNextValue] = useState(null);
     const [quantityNextValue, setQuantityNextValue] = useState(null);
     const [recipeNextValue, setRecipeNextValue] = useState(null);
 
-    const [queuedBatch, setQueuedBatch] = useState(null);
+    const [batchQueue, setBatchQueue] = useState([]);
+
+    const addToQueue = (selectedRecipe, quantity, machineSpeedActualProductsPerMinute) => {
+        const batch = {
+            recipe: selectedRecipe,
+            quantity: quantity,
+            machineSpeedActualProductsPerMinute: machineSpeedActualProductsPerMinute,
+        };
+
+        const newRecipe = selectedRecipe;
+        const newQuantity = quantity;
+        const newSpeed = machineSpeedActualProductsPerMinute;
+
+        if (newRecipe !== null && newQuantity !== null && newSpeed !== null) {
+            const Batch = { recipe: newRecipe, quantity: newQuantity, machineSpeedActualProductsPerMinute: newSpeed };
+
+            try {
+
+                (async () => {
+                    const response = await axios.post('http://localhost:8080/api/batch/addBatchToQueue', Batch);
+                    console.log(response.data);
+
+
+                    setBatchQueue([...batchQueue, batch]);
+                })();
+            } catch (error) {
+                console.error('Error adding batch to the queue:', error);
+
+            }
+        } else {
+            console.error('Invalid data for the new batch.');
+        }
+    };
+
+    const removeFromQueue = async (index) => {
+        const updatedQueue = [...batchQueue];
+        updatedQueue.splice(index, 1);
+        setBatchQueue(updatedQueue);
+
+        try {
+
+            const response = await axios.delete(`http://localhost:8080/api/batch/removeFromQueue/${index}`);
+
+
+            if (response.status === 200) {
+                console.log(response.data);
+
+            } else {
+                console.error('Failed to remove batch:', response.data);
+
+            }
+        } catch (error) {
+            console.error('Error removing batch:', error);
+
+        }
+    };
 
 
     useEffect(() => {
@@ -36,15 +90,6 @@ const NextBatchConfig = () => {
             }
         };
 
-        const fetchQueuedBatchFromQueue = async () => {
-            try {
-                const response = await axios.get("http://localhost:8080/api/batch/batchQueue");
-                return response.data.length > 0 ? response.data[0] : null;
-            } catch (error) {
-                console.error('Error fetching queued batch from BatchQueue:', error);
-                return null;
-            }
-        };
 
 
         const endpoints = [
@@ -53,74 +98,25 @@ const NextBatchConfig = () => {
             { url: 'http://localhost:8080/opcua/quantityNextSub', setValue: setQuantityNextValue },
         ];
 
-        const setNextBatchAsQueued = async () => {
-            try {
-
-                const [machineSpeed, quantity] = await Promise.all([
-                    axios.get('http://localhost:8080/opcua/machineSpeedNextSub'),
-                    axios.get('http://localhost:8080/opcua/quantityNextSub'),
-                ]);
-
-
-
-                const isNextBatchConfigured = machineSpeed.data !== 0 && quantity.data !== 0;
-
-                console.log('Is next batch configured?', isNextBatchConfigured);
-
-
-                if (!isNextBatchConfigured) {
-
-                    const queuedBatchFromQueue = await fetchQueuedBatchFromQueue();
-                    console.log('Queued batch from BatchQueue:', queuedBatchFromQueue);
-
-
-                    if (queuedBatchFromQueue && queuedBatchFromQueue.quantity && queuedBatchFromQueue.recipe && queuedBatchFromQueue.machineSpeedActualProductsPerMinute ) {
-                        setRecipeNextValue(queuedBatchFromQueue.recipe);
-                        setMachineSpeedNextValue(queuedBatchFromQueue.machineSpeedActualProductsPerMinute);
-                        setQuantityNextValue(queuedBatchFromQueue.quantity);
-                    } else {
-                        console.error('Invalid or null queued batch:', queuedBatchFromQueue);
-                    }
-                }
-            } catch (error) {
-                console.error('Error setting next batch as queued:', error);
-            }
-        };
-
         endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
         const intervalId = setInterval(() => {
-            fetchQueuedBatchFromQueue();
-            setNextBatchAsQueued();
+
             endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
         }, 1000);
 
-        console.log("queuedBatch:", queuedBatch)
         return () => clearInterval(intervalId);
     }, []);
 
     const handleSpeedChange = async (event) => {
         const newSpeed = machineSpeedInputRef.current.value;
-        try {
 
-            const response = await axios.post(`http://localhost:8080/api/machine/writeMachineSpeedValue/${newSpeed}`);
-            console.log('Speed of next batch changed successfully:', response.data);
-
-        } catch (error) {
-            console.error('Error changing speed:', error);
-
-        }
     };
 
     const handleQuantityChange = async (event) => {
         const value = parseInt(event.target.value, 10) || 0;
         setQuantity(value);
 
-        try {
-            const response = await axios.post(`http://localhost:8080/api/machine/writeQuantityValue/${value}`);
-            console.log('Quantity of next batch changed successfully:', response.data);
-        } catch (error) {
-            console.error('Error changing quantity:', error);
-        }
+
     };
 
 
@@ -129,12 +125,6 @@ const NextBatchConfig = () => {
         const selectedRecipe = event.target.value;
         setSelectedRecipe(selectedRecipe);
 
-        try {
-            const response = await axios.post(`http://localhost:8080/api/machine/writeRecipeValue/${selectedRecipe}`);
-            console.log('Recipe changed successfully:', response.data);
-        } catch (error) {
-            console.error('Error changing recipe:', error);
-        }
     };
 
 
@@ -161,7 +151,24 @@ const NextBatchConfig = () => {
 
     return (
         <div className="info-box">
-            <h2>Configure next batch</h2>
+                <h2>Batch Queue</h2>
+                <div>
+                    {batchQueue.length === 0 ? (
+                        <p>No batches in the queue.</p>
+                    ) : (
+                        <ul>
+                            {batchQueue.map((batch, index) => (
+                                <li key={index} className="batch-item">
+                                    <strong> Recipe: </strong> {recipeTranslation[batch.recipe]} - <strong> Quantity:
+                                </strong> {batch.quantity} - <strong> Machine Speed:</strong> {batch.machineSpeedActualProductsPerMinute}
+                                    <button className="button" onClick={() => removeFromQueue(index)}>Remove</button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+                <div className="add-to-queue">
+                    <h2>Add Batch to Queue:</h2>
             <h5>Set the values for the next batch:</h5>
             <div className="box-content">
                 {/* Speed Selector */}
@@ -176,7 +183,7 @@ const NextBatchConfig = () => {
                         onChange={handleSpeedChange}
                     />
                 </div>
-                
+
                 {/* Quantity */}
                 <div className="quantity-box">
                     <label htmlFor="speedSelector">Quantity:</label>
@@ -187,7 +194,7 @@ const NextBatchConfig = () => {
                         onChange={handleQuantityChange}
                     />
                 </div>
-               
+
                 {/* Recipe */}
                 <div className="box-content" id="recipeBox">
                     <label htmlFor="speedSelector">Recipe:</label>
@@ -206,18 +213,15 @@ const NextBatchConfig = () => {
                         <option value="6">Alcohol Free</option>
                     </select>
                 </div>
-                <br />
-                <h5>Next batch values read from the machine:</h5>
-                <p>Next Batch Machine Speed (Products Per Minute): {machineSpeedNextValue !== null ? machineSpeedNextValue : 'Loading...'}</p>
-                <p>Next Batch Quantity : {quantityNextValue !== null ? quantityNextValue : 'Loading...'}</p>
-                <p>Next Batch Recipe: {getRecipeDescription()}</p>
+                <button className="button" onClick={() => addToQueue(selectedRecipe, quantity, machineSpeedInputRef.current.value)}>ADD</button>
             </div>
-        </div>
+                </div>
+            </div>
     );
-    
+
 };
 
 
 
-export default NextBatchConfig;
+export default BatchQueue;
 

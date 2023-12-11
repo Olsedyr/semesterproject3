@@ -9,6 +9,7 @@ import OEE from './components/OEE';
 import TemperatureOverTime from './components/TemperatureOverTime';
 import NextBatchConfig from './components/NextBatchConfig';
 import MessageRequest from './components/MessageRequest';
+import BatchQueue from './components/BatchQueue';
 
 
 const PM = () => {
@@ -45,10 +46,14 @@ const PM = () => {
 
                 {/* Next Batch */}
                 <NextBatchConfig />
+
+                {/* Queue the next batch */}
+                <BatchQueue />
             </div>
 
 
-            
+
+
             <ControlButtons />
         </div>
     );
