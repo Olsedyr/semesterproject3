@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,11 +16,37 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:3000") // Allow requests from frontend
 public class BatchController {
     private final BatchService batchService;
+    private final List<Batch> batchQueue = new ArrayList<>();
 
     @Autowired
     public BatchController(BatchService batchService) {
         this.batchService = batchService;
     }
+
+    @GetMapping("/batchQueue")
+    public ResponseEntity<List<Batch>> getBatchQueue() {
+        return ResponseEntity.ok(batchQueue);
+    }
+
+
+    @PostMapping("/addBatchToQueue")
+    public ResponseEntity<String> addToBatchQueue(@RequestBody Batch batch) {
+        batchQueue.add(batch);
+        System.out.printf(batchQueue.toString());
+        return ResponseEntity.ok("Batch added to the queue.");
+    }
+
+    @DeleteMapping("/removeFromQueue/{index}")
+    public ResponseEntity<String> removeFromQueue(@PathVariable int index) {
+        if (index >= 0 && index < batchQueue.size()) {
+            batchQueue.remove(index);
+            System.out.printf(batchQueue.toString());
+            return ResponseEntity.ok("Batch removed from the queue.");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid index.");
+        }
+    }
+
 
     @GetMapping
     public List<Batch> getBatches() {
