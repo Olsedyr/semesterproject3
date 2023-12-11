@@ -74,7 +74,7 @@ const ControlButtons = () => {
         const finishTimeResponse = await axios.put('http://localhost:8080/api/batch/updateFinishTime');
         console.log('Finish Time Updated:', finishTimeResponse.data);
 
-        await fetchQueuedBatchFromQueue();
+        fetchQueuedBatchFromQueue();
       } else {
         console.log('Machine did not stop, check the machine state.');
       }

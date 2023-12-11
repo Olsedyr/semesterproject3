@@ -75,6 +75,37 @@ const NextBatchConfig = () => {
 
 
                     if (queuedBatchFromQueue && queuedBatchFromQueue.quantity && queuedBatchFromQueue.recipe && queuedBatchFromQueue.machineSpeedActualProductsPerMinute ) {
+
+                        const newSpeed = queuedBatchFromQueue.machineSpeedActualProductsPerMinute;
+
+                        try {
+
+                            const response = await axios.post(`http://localhost:8080/api/machine/writeMachineSpeedValue/${newSpeed}`);
+                            console.log('Speed of next batch changed successfully:', response.data);
+
+                        } catch (error) {
+                            console.error('Error changing speed:', error);
+
+                        }
+
+                        const value = queuedBatchFromQueue.quantity;
+
+                        try {
+                            const response = await axios.post(`http://localhost:8080/api/machine/writeQuantityValue/${value}`);
+                            console.log('Quantity of next batch changed successfully:', response.data);
+                        } catch (error) {
+                            console.error('Error changing quantity:', error);
+                        }
+
+                        const selectedRecipe = queuedBatchFromQueue.recipe;
+
+                        try {
+                            const response = await axios.post(`http://localhost:8080/api/machine/writeRecipeValue/${selectedRecipe}`);
+                            console.log('Recipe changed successfully:', response.data);
+                        } catch (error) {
+                            console.error('Error changing recipe:', error);
+                        }
+
                         setRecipeNextValue(queuedBatchFromQueue.recipe);
                         setMachineSpeedNextValue(queuedBatchFromQueue.machineSpeedActualProductsPerMinute);
                         setQuantityNextValue(queuedBatchFromQueue.quantity);
