@@ -169,43 +169,6 @@ const OpcUaValuesDisplay = () => {
     }
   };
 
-  // Update Database with subscription values
-  const updateDatabase = () => {
-    fetch('http://localhost:8080/opcua/saveBatch', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    })
-      .then(response => {
-        // Handle the response if needed
-        console.log('Save Batch Response:', response);
-      })
-      .catch(error => {
-        // Handle errors if the request fails
-        console.error('Error saving batch:', error);
-      });
-
-    fetch('http://localhost:8080/opcua/saveBatchStatusFinished', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    })
-      .then(response => {
-        // Handle the response if needed
-        console.log('Save Batch Status Finished Response:', response);
-      })
-      .catch(error => {
-        // Handle errors if the request fails
-        console.error('Error saving batch status finished:', error);
-      });
-  };
-
-  setInterval(updateDatabase, 10000);
-
 
   const handleSpeedChange = async (event) => {
     const newSpeed = machineSpeedInputRef.current.value;
