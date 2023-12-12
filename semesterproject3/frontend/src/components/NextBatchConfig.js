@@ -1,24 +1,29 @@
 import axios from "axios";
 import React, { useState, useEffect, useRef } from 'react';
+import BatchQueue from './BatchQueue';
 
 // Map of recipe IDs to their names
 const recipeTranslation = {
-    0: 'Pilsner',
-    1: 'Wheat',
-    2: 'IPA',
-    3: 'Stout',
-    4: 'Ale',
-    5: 'Alcohol Free',
+    1: 'Pilsner',
+    2: 'Wheat',
+    3: 'IPA',
+    4: 'Stout',
+    5: 'Ale',
+    6: 'Alcohol Free',
 };
 
 const NextBatchConfig = () => {
     const machineSpeedInputRef = useRef(null);
     const [selectedRecipe, setSelectedRecipe] = useState(null);
     const [quantity, setQuantity] = useState(null);
+    const [machineSpeedActualProductsPerMinute, setSpeed] = useState(null);
+
 
     const [machineSpeedNextValue, setMachineSpeedNextValue] = useState(null);
     const [quantityNextValue, setQuantityNextValue] = useState(null);
     const [recipeNextValue, setRecipeNextValue] = useState(null);
+
+    const [queuedBatch, setQueuedBatch] = useState(null);
 
 
     useEffect(() => {
@@ -31,6 +36,16 @@ const NextBatchConfig = () => {
             }
         };
 
+        const fetchQueuedBatchFromQueue = async () => {
+            try {
+                const response = await axios.get("http://localhost:8080/api/batch/batchQueue");
+                return response.data.length > 0 ? response.data[0] : null;
+            } catch (error) {
+                console.error('Error fetching queued batch from BatchQueue:', error);
+                return null;
+            }
+        };
+
 
         const endpoints = [
             { url: 'http://localhost:8080/opcua/recipeNextSub', setValue: setRecipeNextValue },
@@ -38,24 +53,92 @@ const NextBatchConfig = () => {
             { url: 'http://localhost:8080/opcua/quantityNextSub', setValue: setQuantityNextValue },
         ];
 
+        const setNextBatchAsQueued = async () => {
+            try {
+
+                const [machineSpeed, quantity] = await Promise.all([
+                    axios.get('http://localhost:8080/opcua/machineSpeedNextSub'),
+                    axios.get('http://localhost:8080/opcua/quantityNextSub'),
+                ]);
+
+
+
+                const isNextBatchConfigured = machineSpeed.data !== 0 && quantity.data !== 0;
+
+                console.log('Is next batch configured?', isNextBatchConfigured);
+
+
+                if (!isNextBatchConfigured) {
+
+                    const queuedBatchFromQueue = await fetchQueuedBatchFromQueue();
+                    console.log('Queued batch from BatchQueue:', queuedBatchFromQueue);
+
+
+                    if (queuedBatchFromQueue && queuedBatchFromQueue.quantity && queuedBatchFromQueue.recipe && queuedBatchFromQueue.machineSpeedActualProductsPerMinute ) {
+
+                        const newSpeed = queuedBatchFromQueue.machineSpeedActualProductsPerMinute;
+
+                        try {
+
+                            const response = await axios.post(`http://localhost:8080/api/machine/writeMachineSpeedValue/${newSpeed}`);
+                            console.log('Speed of next batch changed successfully:', response.data);
+
+                        } catch (error) {
+                            console.error('Error changing speed:', error);
+
+                        }
+
+                        const value = queuedBatchFromQueue.quantity;
+
+                        try {
+                            const response = await axios.post(`http://localhost:8080/api/machine/writeQuantityValue/${value}`);
+                            console.log('Quantity of next batch changed successfully:', response.data);
+                        } catch (error) {
+                            console.error('Error changing quantity:', error);
+                        }
+
+                        const selectedRecipe = queuedBatchFromQueue.recipe;
+
+                        try {
+                            const response = await axios.post(`http://localhost:8080/api/machine/writeRecipeValue/${selectedRecipe}`);
+                            console.log('Recipe changed successfully:', response.data);
+                        } catch (error) {
+                            console.error('Error changing recipe:', error);
+                        }
+
+                        setRecipeNextValue(queuedBatchFromQueue.recipe);
+                        setMachineSpeedNextValue(queuedBatchFromQueue.machineSpeedActualProductsPerMinute);
+                        setQuantityNextValue(queuedBatchFromQueue.quantity);
+                    } else {
+                        console.error('Invalid or null queued batch:', queuedBatchFromQueue);
+                    }
+                }
+            } catch (error) {
+                console.error('Error setting next batch as queued:', error);
+            }
+        };
+
         endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
         const intervalId = setInterval(() => {
+            fetchQueuedBatchFromQueue();
+            setNextBatchAsQueued();
             endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
         }, 1000);
 
+        console.log("queuedBatch:", queuedBatch)
         return () => clearInterval(intervalId);
     }, []);
 
     const handleSpeedChange = async (event) => {
         const newSpeed = machineSpeedInputRef.current.value;
         try {
-            // Make a POST request to change the speed value
+
             const response = await axios.post(`http://localhost:8080/api/machine/writeMachineSpeedValue/${newSpeed}`);
             console.log('Speed of next batch changed successfully:', response.data);
-            // Handle the response or update state if needed
+
         } catch (error) {
             console.error('Error changing speed:', error);
-            // Handle errors
+
         }
     };
 
@@ -146,12 +229,12 @@ const NextBatchConfig = () => {
                         onChange={handleRecipeChange}
                     >
                         <option value="">Select Recipe</option>
-                        <option value="0">Pilsner</option>
-                        <option value="1">Wheat</option>
-                        <option value="2">IPA</option>
-                        <option value="3">Stout</option>
-                        <option value="4">Ale</option>
-                        <option value="5">Alcohol Free</option>
+                        <option value="1">Pilsner</option>
+                        <option value="2">Wheat</option>
+                        <option value="3">IPA</option>
+                        <option value="4">Stout</option>
+                        <option value="5">Ale</option>
+                        <option value="6">Alcohol Free</option>
                     </select>
                 </div>
                 <br />
