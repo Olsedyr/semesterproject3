@@ -47,7 +47,6 @@ function App() {
                         />
                     }
                 />
-                <Route path="/batches" element={<AllBatchesTable />} />
                 <Route path="/OpcUaValuesDisplay" element={<OpcUaValuesDisplay />} />
             </Routes>
         </BrowserRouter>
