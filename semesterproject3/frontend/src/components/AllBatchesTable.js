@@ -69,7 +69,7 @@ function AllBatchesTable() {
 
         <div className="container">
             <div className="header">
-                <h1>Production Manager Dashboard</h1>
+                <h1>Batch Data</h1>
             </div>
             <div className="dashboard">
 
