@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import CreateBatchReport from './CreateBatchReport';
+import AllBatchesTable from './AllBatchesTable';
+import ReactDOM from 'react-dom';
 
 // Map of recipe IDs to their names
 const recipeTranslation = {
@@ -14,7 +17,36 @@ const recipeTranslation = {
 function BatchList() {
   const [batches, setBatches] = useState([]);
 
+ 
+// Open all batch data in a new window
+  const openNewWindow = () => {
+    const newWindow = window.open('', '_blank');
+    // writes the basic HTML document structure
+    // Can't get linking to a css file to work
+    newWindow.document.write(`
+    <html><head><title>All Batches</title>
+        <style type="text/css">
+          td, th {
+            border: 1px solid #ddd;
+            text-align: left;
+          }
+          table {
+            border-collapse: collapse;
+            overflow-x: auto;
+          }
+        </style>
+      </head><body></body></html>
+  `);
+    // Margin of the new window
+    newWindow.document.body.style.margin = '20';
+    newWindow.document.body.innerHTML = '<div id="allBatchesTable"></div>';
+
+    const allBatchesTable = newWindow.document.getElementById('allBatchesTable');
+    ReactDOM.render(<AllBatchesTable />, allBatchesTable);
+  };
   
+
+  // Set Time Format
   const formatStartTime = (dateTimeArray) => {
     const date = new Date(
       // Date.UTC(year, monthIndex, day, hour, minute, second, millisecond)
@@ -29,16 +61,7 @@ function BatchList() {
       )
     );
 
-    return date.toLocaleString('da-DK', {
-      
-      /* year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false, // Use 24-hour format */
-    });
+    return date.toLocaleString('da-DK');
   };
 
   
@@ -106,6 +129,12 @@ function BatchList() {
             ))}
           </tbody>
         </table>
+
+        {/* Button to show all batches */}
+        <button onClick={openNewWindow}>Show All</button> 
+
+        {/* Form to download a batch report from a specific batch */}
+        <CreateBatchReport/>
 
 
       </div>

@@ -8,7 +8,6 @@ import org.example.beerMachine.repository.SensorDataRepository;
 import org.example.beerMachine.service.subscriptionServices.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -135,6 +134,16 @@ public class SaveBatchScheduler {
                 if (vibrationSubValue < latestBatch.getVibrationLowest()) {
                     latestBatch.setVibrationLowest(vibrationSubValue);
                 }
+
+                // Mean temp, humidity and vibration of all SensorData with the latest batchId
+                Float temperatureMean = sensorDataRepository.calculateTemperatureMeanByBatchId(latestBatch.getId());
+                Float humidityMean = sensorDataRepository.calculateHumidityMeanByBatchId(latestBatch.getId());
+                Float vibrationMean = sensorDataRepository.calculateVibrationMeanByBatchId(latestBatch.getId());
+
+                // Update the mean sensor data of the latest batch
+                latestBatch.setTemperatureMean(temperatureMean);
+                latestBatch.setHumidityMean(humidityMean);
+                latestBatch.setVibrationMean(vibrationMean);
 
             }
 

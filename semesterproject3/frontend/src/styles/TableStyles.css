@@ -1,0 +1,32 @@
+/* styles.css */
+
+/* Borders for the table */
+.AllBatchesTable {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .AllBatchesTable th,
+  .AllBatchesTable td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .AllBatchesTable th {
+    background-color: #f2f2f2;
+  }
+  
+  
+  table {
+    width: 100%;
+    border-collapse: collapse; /* Merge cell borders */
+    overflow-x: auto; /* Enable horizontal scrolling */
+  }
+  
+  th, td {
+    padding-right: 5px;
+    border: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap; /* Prevent text wrapping */
+  }
