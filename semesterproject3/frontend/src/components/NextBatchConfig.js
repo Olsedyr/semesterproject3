@@ -4,12 +4,12 @@ import BatchQueue from './BatchQueue';
 
 // Map of recipe IDs to their names
 const recipeTranslation = {
-    1: 'Pilsner',
-    2: 'Wheat',
-    3: 'IPA',
-    4: 'Stout',
-    5: 'Ale',
-    6: 'Alcohol Free',
+    0: 'Pilsner',
+    1: 'Wheat',
+    2: 'IPA',
+    3: 'Stout',
+    4: 'Ale',
+    5: 'Alcohol Free',
 };
 
 const NextBatchConfig = () => {
@@ -74,7 +74,7 @@ const NextBatchConfig = () => {
                     console.log('Queued batch from BatchQueue:', queuedBatchFromQueue);
 
 
-                    if (queuedBatchFromQueue && queuedBatchFromQueue.quantity && queuedBatchFromQueue.recipe && queuedBatchFromQueue.machineSpeedActualProductsPerMinute ) {
+                    if (queuedBatchFromQueue && queuedBatchFromQueue.quantity && queuedBatchFromQueue.machineSpeedActualProductsPerMinute ) {
 
                         const newSpeed = queuedBatchFromQueue.machineSpeedActualProductsPerMinute;
 
@@ -229,12 +229,12 @@ const NextBatchConfig = () => {
                         onChange={handleRecipeChange}
                     >
                         <option value="">Select Recipe</option>
-                        <option value="1">Pilsner</option>
-                        <option value="2">Wheat</option>
-                        <option value="3">IPA</option>
-                        <option value="4">Stout</option>
-                        <option value="5">Ale</option>
-                        <option value="6">Alcohol Free</option>
+                        <option value="0">Pilsner</option>
+                        <option value="1">Wheat</option>
+                        <option value="2">IPA</option>
+                        <option value="3">Stout</option>
+                        <option value="4">Ale</option>
+                        <option value="5">Alcohol Free</option>
                     </select>
                 </div>
                 <br />
