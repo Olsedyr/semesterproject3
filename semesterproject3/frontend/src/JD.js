@@ -10,6 +10,7 @@ import TemperatureOverTime from './components/TemperatureOverTime';
 import NextBatchConfig from './components/NextBatchConfig';
 import RadioButtonRequest from './components/RadioButtonRequest'
 import SaveProductionData from "./components/SaveProductionData";
+import BatchList from './components/BatchList';
 
 
 const JD = () => {
@@ -46,6 +47,9 @@ const JD = () => {
 
                 {/* Next Batch */}
                 <NextBatchConfig />
+
+                {/* Batch List */}
+                <BatchList/>
 
 
                 <SaveProductionData/>
