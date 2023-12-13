@@ -9,7 +9,7 @@ const SensorData = () => {
 
 
     useEffect(() => {
-        const fetchData = async (url, setValue) => {
+        const fetchData = async (url, sehtValue) => {
             try {
                 const response = await axios.get(url);
                 setValue(response.data);
@@ -19,11 +19,28 @@ const SensorData = () => {
         };
 
 
+        const stopMachine = async () => {
+            try {
+                await axios.post("http://localhost:8080/machinecontroller/stop")
+                console.log('Stopped the machine');
+            } catch (error) {
+                console.error('Error stopping the machine:', error);
+            }
+        };
+
+
         const endpoints = [
             { url: 'http://localhost:8080/opcua/sensorHumiditySub', setValue: setSensorHumidityValue },
             { url: 'http://localhost:8080/opcua/sensorTemperatureSub', setValue: setSensorTemperatureValue },
-            { url: 'http://localhost:8080/opcua/sensorVibrationSub', setValue: setSensorVibrationValue },
-
+            {
+                url: 'http://localhost:8080/opcua/sensorVibrationSub',
+                setValue: (value) => {
+                    setSensorVibrationValue(value);
+                    if (value > 3) {
+                        stopMachine();
+                    }
+                }
+            },
         ];
 
 
