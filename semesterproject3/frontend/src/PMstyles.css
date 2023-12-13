@@ -245,10 +245,13 @@ th, td {
   }
 
 .batch-item {
-    margin-bottom: 8px; /* Adjust the value as needed */
+    margin-bottom: 8px;
 }
 
 .batch-item button {
-    margin-left: 15px; /* Adjust the value as needed */
+    margin-left: 15px;
 }
 
+.add-to-queue {
+    margin-top: 15px;
+}
