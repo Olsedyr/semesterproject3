@@ -130,6 +130,11 @@ public class BatchController {
         }
     }
 
+    @GetMapping("/{batchId}")
+    public Optional<Batch> getBatchById(@PathVariable Long batchId) {
+        return batchService.getBatchById(batchId);
+    }
+
 
 
 }

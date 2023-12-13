@@ -36,10 +36,13 @@ public class Batch {
     private int defectProducts;
     private float temperatureLowest;
     private float temperatureHighest;
+    private float temperatureMean;
     private float humidityLowest;
     private float humidityHighest;
+    private float humidityMean;
     private float vibrationLowest;
     private float vibrationHighest;
+    private float vibrationMean;
     private float ingredientBarleyStart;
     private float ingredientBarleyStop;
     private float ingredientHopsStart;
@@ -81,6 +84,7 @@ public class Batch {
     public Long getId() {
         return id;
     }
+
 
     public void setId(Long id) {
         this.id = id;
@@ -174,6 +178,14 @@ public class Batch {
         this.temperatureHighest = temperatureHighest;
     }
 
+    public float getTemperatureMean() {
+        return temperatureMean;
+    }
+
+    public void setTemperatureMean(float temperatureMean) {
+        this.temperatureMean = temperatureMean;
+    }
+
     public float getHumidityLowest() {
         return humidityLowest;
     }
@@ -190,6 +202,14 @@ public class Batch {
         this.humidityHighest = humidityHighest;
     }
 
+    public float getHumidityMean() {
+        return humidityMean;
+    }
+
+    public void setHumidityMean(float humidityMean) {
+        this.humidityMean = humidityMean;
+    }
+
     public float getVibrationLowest() {
         return vibrationLowest;
     }
@@ -204,6 +224,14 @@ public class Batch {
 
     public void setVibrationHighest(float vibrationHighest) {
         this.vibrationHighest = vibrationHighest;
+    }
+
+    public float getVibrationMean() {
+        return vibrationMean;
+    }
+
+    public void setVibrationMean(float vibrationMean) {
+        this.vibrationMean = vibrationMean;
     }
 
     public float getIngredientBarleyStart() {
