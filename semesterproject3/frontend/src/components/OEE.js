@@ -4,48 +4,33 @@ import axios from "axios";
 const OEE = () => {
 
     const [oee, setOEE] = useState(0);
-    const [availability, setAvailability] = useState(0.85);
-    const [performance, setPerformance] = useState(0.90);
-    const [quality, setQuality] = useState(0.95);
-    const [productionStartTime, setProductionStartTime] = useState(null);
-    const [latestBatch, setLatestBatch] = useState(null);
-    const [defectNodeValue, setDefectNodeValue] = useState(null);
-    const [producedNodeValue, setProducedNodeValue] = useState(null);
-    const [stateCurrentValue, setStateCurrentValue] = useState(null);
-    const [recipeCurrentValue, setRecipeCurrentValue] = useState(null);
-    const [machineSpeedCurrentValue, setMachineSpeedCurrentValue] = useState(null);
-    const [machineSpeedCurrentProductsPerMinute, setMachineSpeedCurrentProductsPerMinute] = useState(null);
-    const [quantityCurrentValue, setQuantityCurrentValue] = useState(null);
-    const machineSpeedInputRef = useRef(null);
-    const [selectedRecipe, setSelectedRecipe] = useState(null);
+
+    const [seconds, setSeconds] = useState(null);
     const [quantity, setQuantity] = useState(null);
+    const [speedNormalised, setSpeedNormalised] = useState(null);
+    const [speedActual, setSpeedActual] = useState(null);
+    const [AcceptableProducts, setAcceptableProducts] = useState(null);
+    const [DefectProducts, setDefectProducts] = useState(null);
+
 
 
     const calculateOEE = () => {
+
         // Availability
-        const availability = stateCurrentValue === "Operating" ? 1 : 0;
+        const availability = (((seconds) / (3.8 * quantity)))
 
         // Performance
-        const idealProductionRate = quantityCurrentValue;
-        const actualProductionRate = producedNodeValue;
-        const performance = actualProductionRate / idealProductionRate;
+        const performance = ((speedNormalised / speedActual) )
 
         // Quality
-        const goodUnits = producedNodeValue - defectNodeValue;
-        const quality = goodUnits / producedNodeValue;
+        const quality = (((AcceptableProducts - DefectProducts) / quantity))
 
         // Calculate OEE
-        const calculatedOEE = availability * performance * quality * 100;
+        const calculatedOEE = (availability * performance * quality) * 100;
+
         setOEE(calculatedOEE);
     };
 
-    useEffect(() => {
-        calculateOEE();
-    }, [stateCurrentValue, quantityCurrentValue, producedNodeValue, defectNodeValue]);
-
-    useEffect(() => {
-        calculateOEE();
-    }, [availability, performance, quality]);
 
     useEffect(() => {
         const fetchData = async (url, setValue) => {
@@ -57,29 +42,33 @@ const OEE = () => {
             }
         };
 
+
         const endpoints = [
-            { url: 'http://localhost:8080/opcua/productsProcessedSub', setValue: setProducedNodeValue },
-            { url: 'http://localhost:8080/opcua/productsDefectiveSub', setValue: setDefectNodeValue },
-            { url: 'http://localhost:8080/opcua/stateCurrentSub', setValue: setStateCurrentValue },
-            { url: 'http://localhost:8080/opcua/recipeCurrentSub', setValue: setRecipeCurrentValue },
-            { url: 'http://localhost:8080/opcua/machineSpeedCurrentSub', setValue: setMachineSpeedCurrentValue },
-            { url: 'http://localhost:8080/opcua/machineSpeedCurrentProductsPerMinuteSub', setValue: setMachineSpeedCurrentProductsPerMinute },
-            { url: 'http://localhost:8080/opcua/quantityCurrentSub', setValue: setQuantityCurrentValue },
-            { url: 'http://localhost:8080/api/batch/latestBatch', setValue: setLatestBatch },
+            { url: 'http://localhost:8080/api/batch/latestBatchTimeDifference', setValue: setSeconds },
+            { url: 'http://localhost:8080/api/batch/latestBatchQuantity', setValue: setQuantity },
+            { url: 'http://localhost:8080/api/batch/latestBatchSpeedNormalised', setValue: setSpeedNormalised },
+            { url: 'http://localhost:8080/api/batch/latestBatchSpeedActual', setValue: setSpeedActual },
+            { url: 'http://localhost:8080/api/batch/latestBatchAcceptableProducts', setValue: setAcceptableProducts },
+            { url: 'http://localhost:8080/api/batch/latestBatchDefectProducts', setValue: setDefectProducts},
 
         ];
 
-        // Fetch node values when the component mounts
-        endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
+        const fetchDataAndCalculateOEE = async () => {
+            endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
+            calculateOEE();
+        };
+
+        fetchDataAndCalculateOEE()
 
         // Fetch node values every second
         const intervalId = setInterval(() => {
             endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
+            console.log(oee)
         }, 1000);
 
         // Clear the interval on component unmount
         return () => clearInterval(intervalId);
-    }, []);
+    }, [oee]);
 
 
     // Return JSX

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -129,6 +130,92 @@ public class BatchController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/latestBatchFinishTime")
+    public ResponseEntity<LocalDateTime> getLatestBatchFinishTime() {
+        LocalDateTime latestBatchStatus = batchService.getLatestBatchFinishTime();
+
+        if (latestBatchStatus != null) {
+            return ResponseEntity.ok(latestBatchStatus);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/latestBatchTimeDifference")
+    public ResponseEntity<Long> getLatestBatchTimeDifference() {
+        LocalDateTime startTime = batchService.getLatestBatchStartTime();
+        LocalDateTime finishTime = batchService.getLatestBatchFinishTime();
+
+        Duration duration = Duration.between(startTime, finishTime);
+
+        long seconds = duration.getSeconds();
+
+        System.out.println("Duration between start and finish:" + seconds);
+
+        if (seconds != 0) {
+            return ResponseEntity.ok(seconds);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @GetMapping("/latestBatchQuantity")
+    public ResponseEntity<Float> getLatestBatchQuantity() {
+        Float latestBatchStatus = batchService.getLatestBatchQuantity();
+
+        if (latestBatchStatus != null) {
+            return ResponseEntity.ok(latestBatchStatus);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/latestBatchSpeedNormalised")
+    public ResponseEntity<Float> getLatestBatchSpeedNormalised() {
+        Float latestBatchStatus = batchService.getLatestBatchSpeedNormalised();
+
+        if (latestBatchStatus != null) {
+            return ResponseEntity.ok(latestBatchStatus);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/latestBatchSpeedActual")
+    public ResponseEntity<Float> getLatestBatchSpeedActual() {
+        Float latestBatchStatus = batchService.getLatestBatchSpeedActual();
+
+        if (latestBatchStatus != null) {
+            return ResponseEntity.ok(latestBatchStatus);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/latestBatchAcceptableProducts")
+    public ResponseEntity<Integer> getLatestAcceptableProducts() {
+        Integer latestBatchStatus = batchService.getLatestBatchAcceptableProducts();
+
+        if (latestBatchStatus != null) {
+            return ResponseEntity.ok(latestBatchStatus);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/latestBatchDefectProducts")
+    public ResponseEntity<Integer> getLatestBatchDefectProducts() {
+        Integer latestBatchStatus = batchService.getLatestBatchDefectProducts();
+
+        if (latestBatchStatus != null) {
+            return ResponseEntity.ok(latestBatchStatus);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @GetMapping("/{batchId}")
     public Optional<Batch> getBatchById(@PathVariable Long batchId) {

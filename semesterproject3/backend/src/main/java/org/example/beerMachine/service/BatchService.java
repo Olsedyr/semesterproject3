@@ -111,6 +111,36 @@ public class BatchService {
         return latestBatchOptional.map(Batch::getStartTime).orElse(null);
     }
 
+    public LocalDateTime getLatestBatchFinishTime() {
+        Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
+        return latestBatchOptional.map(Batch::getFinishTime).orElse(null);
+    }
+
+    public Float getLatestBatchQuantity() {
+        Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
+        return latestBatchOptional.map(Batch::getQuantity).orElse(null);
+    }
+
+    public Float getLatestBatchSpeedNormalised() {
+        Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
+        return latestBatchOptional.map(Batch::getMachineSpeedActualNormalized).orElse(null);
+    }
+
+    public Float getLatestBatchSpeedActual() {
+        Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
+        return latestBatchOptional.map(Batch::getMachineSpeedActualProductsPerMinute).orElse(null);
+    }
+
+    public Integer getLatestBatchAcceptableProducts() {
+        Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
+        return latestBatchOptional.map(Batch::getAcceptableProducts).orElse(null);
+    }
+
+    public Integer getLatestBatchDefectProducts() {
+        Optional<Batch> latestBatchOptional = batchRepository.findFirstByOrderByStartTimeDesc();
+        return latestBatchOptional.map(Batch::getDefectProducts).orElse(null);
+    }
+
     public Optional<Batch> getBatchById (Long batchId){
         Optional<Batch> batch = batchRepository.findById(batchId);
         return batch;
