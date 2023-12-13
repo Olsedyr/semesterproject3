@@ -229,6 +229,21 @@ body::before {
     margin-bottom: 5px;
 }
 
+
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Merge cell borders */
+    overflow-x: auto; /* Enable horizontal scrolling */
+  }
+  
+th, td {
+    padding-right: 5px;
+    border: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap; /* Prevent text wrapping */
+  }
+
 .batch-item {
     margin-bottom: 8px; /* Adjust the value as needed */
 }
@@ -236,3 +251,4 @@ body::before {
 .batch-item button {
     margin-left: 15px; /* Adjust the value as needed */
 }
+

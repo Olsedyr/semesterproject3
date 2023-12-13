@@ -155,8 +155,8 @@ public class MachineController {
         if (value < 1) {
             value = 1;
         }
-        if (value > 999_999_999) {
-            value = 999_999_999;
+        if (value > 65000) {
+            value = 65000;
         }
         StatusCode statusCode = writeValueToNode(nodeId, value);
         boolean success = false;

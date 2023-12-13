@@ -111,4 +111,10 @@ public class BatchService {
         return latestBatchOptional.map(Batch::getStartTime).orElse(null);
     }
 
+    public Optional<Batch> getBatchById (Long batchId){
+        Optional<Batch> batch = batchRepository.findById(batchId);
+        return batch;
+    }
+
+
 }
