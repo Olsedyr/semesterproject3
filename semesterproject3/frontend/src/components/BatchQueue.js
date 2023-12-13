@@ -79,6 +79,16 @@ const BatchQueue = () => {
         }
     };
 
+    const fetchQueuedBatchFromQueue = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/api/batch/batchQueue");
+            setBatchQueue(response.data);
+        } catch (error) {
+            console.error('Error fetching queued batch from BatchQueue:', error);
+            return null;
+        }
+    };
+
 
     useEffect(() => {
         const fetchData = async (url, setValue) => {
@@ -100,7 +110,7 @@ const BatchQueue = () => {
 
         endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
         const intervalId = setInterval(() => {
-
+            fetchQueuedBatchFromQueue()
             endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
         }, 1000);
 
@@ -161,7 +171,7 @@ const BatchQueue = () => {
                                 <li key={index} className="batch-item">
                                     <strong> Recipe: </strong> {recipeTranslation[batch.recipe]} - <strong> Quantity:
                                 </strong> {batch.quantity} - <strong> Machine Speed:</strong> {batch.machineSpeedActualProductsPerMinute}
-                                    <button className="button" onClick={() => removeFromQueue(index)}>Remove</button>
+                                    <button onClick={() => removeFromQueue(index)}>Remove</button>
                                 </li>
                             ))}
                         </ul>
@@ -213,7 +223,7 @@ const BatchQueue = () => {
                         <option value="6">Alcohol Free</option>
                     </select>
                 </div>
-                <button className="button" onClick={() => addToQueue(selectedRecipe, quantity, machineSpeedInputRef.current.value)}>ADD</button>
+                <button className="add-to-queue" onClick={() => addToQueue(selectedRecipe, quantity, machineSpeedInputRef.current.value)}>Add To Queue</button>
             </div>
                 </div>
             </div>
