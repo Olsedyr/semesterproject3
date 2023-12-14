@@ -67,34 +67,36 @@ function BatchList() {
   
 
 
-  // fetch data from the backend API
+  // Fetch data from the backend API
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/batch'); // Backend endpoint URL
+
+      // Sort batches by descending ID and get the last 10
+      const sortedLastTenBatches = response.data
+        .sort((a, b) => b.id - a.id)
+        .slice(0, 10);
+
+      const formattedBatches = sortedLastTenBatches.map((batch) => ({
+        ...batch,
+        startTime: formatStartTime(batch.startTime), // Format Start Time
+        recipe: recipeTranslation[batch.recipe], // Use recipe names instead of recipe IDs
+      }));
+      setBatches(formattedBatches);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/api/batch'); // backend endpoint URL
+    fetchData(); // Initial data fetch on component mount
+  }, []); 
 
-        // Sort batches by descending ID and get the last 10
-        const sortedLastTenBatches = response.data
-          .sort((a, b) => b.id - a.id)
-          .slice(0, 10);
 
-        
-        const formattedBatches = sortedLastTenBatches.map((batch) => ({
-          ...batch,
-          startTime: formatStartTime(batch.startTime), // format Start Time
-
-          recipe: recipeTranslation[batch.recipe], // Use recipe names instead of recipe IDs
-        }));
-        setBatches(formattedBatches);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
+  // Function to refresh table data
+  const refreshTable = () => {
     fetchData();
-  }, []);
-
-
+  };
 
 
   return (
@@ -130,8 +132,7 @@ function BatchList() {
           </tbody>
         </table>
 
-        {/* Button to show all batches */}
-        <button onClick={openNewWindow}>Show All</button> 
+        <div><button onClick={openNewWindow}>Show All</button> <button onClick={refreshTable}>Refresh</button></div>
 
         {/* Form to download a batch report from a specific batch */}
         <CreateBatchReport/>
