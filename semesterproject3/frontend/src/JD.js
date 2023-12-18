@@ -45,9 +45,6 @@ const JD = () => {
                 {/* Message Request */}
                 <RadioButtonRequest/>
 
-                {/* Next Batch */}
-                <NextBatchConfig />
-
                 {/* Batch List */}
                 <BatchList/>
 
