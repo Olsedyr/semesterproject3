@@ -106,7 +106,7 @@ public class SaveBatchScheduler {
         if (latestBatchOptional.isPresent()) {
             Batch latestBatch = latestBatchOptional.get();
             if (latestBatch.getStatus().equals("started")) {
-                latestBatch.setProcessedProductsTotal(acceptableProducts);
+                latestBatch.setProcessedProductsTotal(processedProducts);
                 latestBatch.setDefectProducts(defectProducts);
                 latestBatch.setAcceptableProducts(acceptableProducts);
                 latestBatch.setIngredientBarleyStop(ingredientBarley);
