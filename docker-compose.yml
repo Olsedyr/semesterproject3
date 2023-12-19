@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+
+  database:
+    image: postgres:latest
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      POSTGRES_DB: $POSTGRESDB_DATABASE
+      POSTGRES_USER: $POSTGRESDB_USER
+      POSTGRES_PASSWORD: $POSTGRESDB_ROOT_PASSWORD
+    ports:
+      - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+
+  frontend:
+    build: ./semesterproject3/frontend
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    volumes:
+      - './:/app'
+      - '/app/node_modules'
+    depends_on:
+      - backend
+    # Other configurations for frontend service
+
+  backend:
+    depends_on:
+      - database
+    build: ./semesterproject3/backend
+    env_file: ./.env
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_JSON: '{
+              "spring.datasource.url"  : "jdbc:postgresql://database:$POSTGRESDB_DOCKER_PORT/$POSTGRESDB_DATABASE",
+              "spring.datasource.username" : "$POSTGRESDB_USER",
+              "spring.datasource.password" : "$POSTGRESDB_ROOT_PASSWORD",
+              "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
+              "spring.jpa.hibernate.ddl-auto" : "update" }'
+    # Other configurations for backend service
+
+
+
+volumes:
+  postgres-data:

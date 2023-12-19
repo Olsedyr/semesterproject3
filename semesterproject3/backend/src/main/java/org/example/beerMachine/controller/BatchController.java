@@ -1,5 +1,6 @@
 package org.example.beerMachine.controller;
 
+import org.example.beerMachine.repository.BatchRepository;
 import org.example.beerMachine.service.BatchService;
 import org.example.beerMachine.model.Batch;
 import org.springframework.beans.factory.annotation.Autowired;

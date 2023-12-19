@@ -226,8 +226,6 @@ public class MachineController {
         boolean started = false;
         int state = readStateCurrent();
         if (state == 4) { // State must be idle
-            // set the batchId (needs database value)
-            // writeBatchIdValue(batchId);
 
             // start the machine
             StatusCode statusCode = client.writeValue(nodeId, DataValue.valueOnly(new Variant(value))).get();

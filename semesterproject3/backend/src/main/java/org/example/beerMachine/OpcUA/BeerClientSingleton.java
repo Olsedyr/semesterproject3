@@ -29,10 +29,10 @@ public class BeerClientSingleton {
     }
 
     private static OpcUaClient createAndConnectOPCUAClient() throws Exception {
-        String serverEndpointUrl = "opc.tcp://127.0.0.1:4840"; // Software simulation
-        String hostname = "127.0.0.1"; // Software simulation
-        // String serverEndpointUrl = "opc.tcp://192.168.0.122:4840"; // Machine Simulation
-        // String hostname = "192.168.0.122"; // Machine Simulation
+        //String serverEndpointUrl = "opc.tcp://127.0.0.1:4840"; // Software simulation
+        //String hostname = "127.0.0.1"; // Software simulation
+        String serverEndpointUrl = "opc.tcp://192.168.0.122:4840"; // Machine Simulation
+        String hostname = "192.168.0.122"; // Machine Simulation
 
         int port = 4840;
 

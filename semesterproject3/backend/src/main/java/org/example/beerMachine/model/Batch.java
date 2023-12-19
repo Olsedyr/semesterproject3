@@ -21,11 +21,8 @@ public class Batch {
             strategy = GenerationType.SEQUENCE,
             generator = "batch_generator"
     )
-
-
     private Long id;
     private float recipe;
-    // private Recipe recipe;
     private float quantity;
     private float machineSpeedActualProductsPerMinute;
     private float machineSpeedActualNormalized;
