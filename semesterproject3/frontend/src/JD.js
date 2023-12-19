@@ -19,13 +19,11 @@ const JD = () => {
     return (
         <div className="container">
             <div className="header">
-                <h1>Production Manager Dashboard</h1>
+                <h1>Junior Employee Dashboard</h1>
             </div>
             <div className="dashboard">
 
 
-                {/* Temperature over time */}
-                <TemperatureOverTime />
 
                 {/* Maintenance Bar */}
                 <MaintenanceBox />

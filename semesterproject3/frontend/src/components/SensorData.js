@@ -18,37 +18,63 @@ const SensorData = () => {
             }
         };
 
-        const stopMachine = async () => {
-            try {
-                await axios.post("http://localhost:8080/machinecontroller/stop")
-                console.log('Stopped the machine');
-            } catch (error) {
-                console.error('Error stopping the machine:', error);
-            }
-        };
+        
 
-        const endpoints = [
-            { url: 'http://localhost:8080/opcua/sensorHumiditySub', setValue: setSensorHumidityValue },
-            { url: 'http://localhost:8080/opcua/sensorTemperatureSub', setValue: setSensorTemperatureValue },
-            {
-                url: 'http://localhost:8080/opcua/sensorVibrationSub',
-                setValue: (value) => {
-                    setSensorVibrationValue(value);
-                    if (value > 3) {
-                        stopMachine();
-                    }
-                }
-            },
-        ];
-
+    const endpoints = [
+        { url: 'http://localhost:8080/opcua/sensorHumiditySub', setValue: setSensorHumidityValue },
+        { url: 'http://localhost:8080/opcua/sensorTemperatureSub', setValue: setSensorTemperatureValue },
+        { url: 'http://localhost:8080/opcua/sensorVibrationSub', setValue: setSensorVibrationValue}
+    ];
+    const checkVibration = async () => {
+        const vibrationValue = parseFloat(sensorVibrationValue); // Parse the value to a number
+        if (!isNaN(vibrationValue) && vibrationValue > 3 ) { // Check if it's a valid number and greater than 3
+            await handleAbortProduction();
+        }
+        if (!isNaN(vibrationValue) && vibrationValue < -3 ) {
+            await handleAbortProduction();
+        }
+    };
+     const fetchDataAndUpdate = () => {
         endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
-        const intervalId = setInterval(() => {
-            endpoints.forEach(({ url, setValue }) => fetchData(url, setValue));
-        }, 1000);
+        checkVibration(); // Call checkVibration within fetchDataAndUpdate
+    };
 
-        return () => clearInterval(intervalId);
-    }, []);
+    fetchDataAndUpdate(); // Initial call to update sensor values and check vibration
 
+    const intervalId = setInterval(fetchDataAndUpdate, 1000); // Call fetchDataAndUpdate at intervals
+
+    return () => clearInterval(intervalId);
+}, [sensorVibrationValue]); // Include sensorVibrationValue in the dependency array
+
+    const handleAbortProduction = async () => {
+        try {
+          // Aborting the machine
+          const machineResponse = await axios.post('http://localhost:8080/api/machine/abort');
+          const machineAborted = machineResponse.data;
+      
+          if (machineAborted) {
+            const batchAbortResponse = await axios.put('http://localhost:8080/api/batch/updateStatus?status=aborted');
+            console.log('Batch aborted:', batchAbortResponse.data);
+      
+            // Update the finish time of the batch using the updateFinishTime endpoint
+            const finishTimeResponse = await axios.put('http://localhost:8080/api/batch/updateFinishTime');
+            console.log('Finish Time Updated:', finishTimeResponse.data);
+          } else {
+            console.log('Machine did not abort, check the machine state.');
+          }
+        } catch (error) {
+          console.error('Error aborting machine:', error);
+        }
+      };
+      const checkVibration = async () => {
+        const vibrationValue = parseFloat(sensorVibrationValue); // Parse the value to a number
+        if (!isNaN(vibrationValue) && vibrationValue > 3) { // Check if it's a valid number and greater than 3
+            await handleAbortProduction();
+            console.log("Vibration is greater than 3")
+        }
+    };
+
+    
 
     return (
         <div className="info-box">

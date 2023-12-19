@@ -25,8 +25,7 @@ const PM = () => {
             <div className="dashboard">
 
 
-                {/* Temperature over time */}
-                <TemperatureOverTime />
+        
 
                 {/* Maintenance Bar */}
                 <MaintenanceBox />
