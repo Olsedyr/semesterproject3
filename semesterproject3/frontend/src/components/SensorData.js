@@ -26,7 +26,7 @@ const SensorData = () => {
         { url: 'http://localhost:8080/opcua/sensorVibrationSub', setValue: setSensorVibrationValue}
     ];
     const checkVibration = async () => {
-        const vibrationValue = parseFloat(sensorVibrationValue); // Parse the value to a number
+        const vibrationValue = parseFloat(sensorVibrationValue);
         if (!isNaN(vibrationValue) && vibrationValue > 3 ) { // Check if it's a valid number and greater than 3
             await handleAbortProduction();
         }
@@ -66,13 +66,7 @@ const SensorData = () => {
           console.error('Error aborting machine:', error);
         }
       };
-      const checkVibration = async () => {
-        const vibrationValue = parseFloat(sensorVibrationValue); // Parse the value to a number
-        if (!isNaN(vibrationValue) && vibrationValue > 3) { // Check if it's a valid number and greater than 3
-            await handleAbortProduction();
-            console.log("Vibration is greater than 3")
-        }
-    };
+      ;
 
     
 
