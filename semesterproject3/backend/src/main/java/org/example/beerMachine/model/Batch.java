@@ -319,7 +319,7 @@ public class Batch {
         this.status = status;
     }
 
-    // set the startTime before the entity is persisted for the first time
+    // set values before the entity is persisted for the first time
     @PrePersist
     protected void onCreate() throws ExecutionException, InterruptedException {
         MachineController machineController = new MachineController();

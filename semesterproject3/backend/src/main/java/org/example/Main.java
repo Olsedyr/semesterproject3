@@ -39,8 +39,6 @@ public class Main {
         machineController.readStateCurrent();
         machineController.readProductsProcessed();
 
-        machineController.readIngredients();
-        machineController.readMaintenanceDetails();
 
 
         // let the example run forever
